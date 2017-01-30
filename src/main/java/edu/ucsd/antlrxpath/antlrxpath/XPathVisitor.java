@@ -40,13 +40,6 @@ public interface XPathVisitor<T> extends ParseTreeVisitor<T> {
 	T visitCondition(@NotNull XPathParser.ConditionContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link XPathParser#not}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNot(@NotNull XPathParser.NotContext ctx);
-
-	/**
 	 * Visit a parse tree produced by {@link XPathParser#xquery}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

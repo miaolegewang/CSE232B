@@ -54,9 +54,8 @@ pathFilter:
         | relativePath equal relativePath
         | '(' relativePath ')'
         | pathFilter condition pathFilter
-        | not relativePath
+        | 'not' pathFilter
         ;
 
 equal: '=' | 'eq' | '==' | 'is';
 condition: 'and' | 'or';
-not: 'not';

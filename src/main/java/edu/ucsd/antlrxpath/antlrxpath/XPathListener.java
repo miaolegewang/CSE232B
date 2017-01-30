@@ -53,17 +53,6 @@ public interface XPathListener extends ParseTreeListener {
 	void exitCondition(@NotNull XPathParser.ConditionContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link XPathParser#not}.
-	 * @param ctx the parse tree
-	 */
-	void enterNot(@NotNull XPathParser.NotContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XPathParser#not}.
-	 * @param ctx the parse tree
-	 */
-	void exitNot(@NotNull XPathParser.NotContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link XPathParser#xquery}.
 	 * @param ctx the parse tree
 	 */
