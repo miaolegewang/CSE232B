@@ -18,7 +18,7 @@ xpath: absolutePath ('/' | '//') relativePath;
 
 absolutePath: 'doc("' Filename '")';
 
-Filename: [a-zA-Z0-9_]+ '.xml';
+Filename: [a-zA-Z0-9_'.''/']+ '.xml';
 
 /*
  * ====================
@@ -39,8 +39,8 @@ relativePath:
         | relativePath ',' relativePath
         ;
 
-TagName: [a-zA-Z0-9_]+;
-AttName: [a-zA-Z0-9_]+;
+TagName: [a-zA-Z0-9]+;
+AttName: [a-zA-Z0-9]+;
 
 
 /*
