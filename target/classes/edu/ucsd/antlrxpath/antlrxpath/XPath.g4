@@ -18,7 +18,7 @@ xpath: absolutePath ('/' | '//') relativePath;
 
 absolutePath: 'doc("' Filename '")';
 
-Filename: [a-zA-Z0-9_]+ '.xml';
+Filename: [a-zA-Z0-9_'.''/']+ '.xml';
 
 /*
  * ====================
@@ -27,20 +27,22 @@ Filename: [a-zA-Z0-9_]+ '.xml';
  */
 
 relativePath:
-          TagName
+          tagName
         | '*'
         | '.'
         | '..'
         | 'text()'
-        | '@' AttName
+        | '@' attName
         | '(' relativePath ')'
         | relativePath ('/' | '//') relativePath
         | relativePath '[' pathFilter ']'
         | relativePath ',' relativePath
         ;
 
-TagName: [a-zA-Z0-9_]+;
-AttName: [a-zA-Z0-9_]+;
+tagName: NAME;
+attName: NAME;
+
+NAME: [a-zA-Z0-9]+;
 
 
 /*
@@ -51,11 +53,13 @@ AttName: [a-zA-Z0-9_]+;
 
 pathFilter:
           relativePath
-        | relativePath equal relativePath
-        | '(' relativePath ')'
-        | pathFilter condition pathFilter
+        | relativePath (ValueEq | IDEq) relativePath
+        | '(' pathFilter ')'
+        | pathFilter (AND | OR) pathFilter
         | 'not' pathFilter
         ;
 
-equal: '=' | 'eq' | '==' | 'is';
-condition: 'and' | 'or';
+ValueEq: '=' | 'eq';
+IDEq: '==' | 'is';
+AND: 'and';
+OR: 'or';

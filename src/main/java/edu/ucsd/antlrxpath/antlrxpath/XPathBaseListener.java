@@ -30,19 +30,6 @@ public class XPathBaseListener implements XPathListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEqual(@NotNull XPathParser.EqualContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEqual(@NotNull XPathParser.EqualContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterXpath(@NotNull XPathParser.XpathContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -50,19 +37,6 @@ public class XPathBaseListener implements XPathListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitXpath(@NotNull XPathParser.XpathContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCondition(@NotNull XPathParser.ConditionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCondition(@NotNull XPathParser.ConditionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -102,6 +76,32 @@ public class XPathBaseListener implements XPathListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAbsolutePath(@NotNull XPathParser.AbsolutePathContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAttName(@NotNull XPathParser.AttNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAttName(@NotNull XPathParser.AttNameContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTagName(@NotNull XPathParser.TagNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTagName(@NotNull XPathParser.TagNameContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

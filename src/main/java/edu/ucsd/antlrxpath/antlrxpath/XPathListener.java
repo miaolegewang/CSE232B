@@ -20,17 +20,6 @@ public interface XPathListener extends ParseTreeListener {
 	void exitPathFilter(@NotNull XPathParser.PathFilterContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link XPathParser#equal}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqual(@NotNull XPathParser.EqualContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XPathParser#equal}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqual(@NotNull XPathParser.EqualContext ctx);
-
-	/**
 	 * Enter a parse tree produced by {@link XPathParser#xpath}.
 	 * @param ctx the parse tree
 	 */
@@ -40,17 +29,6 @@ public interface XPathListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitXpath(@NotNull XPathParser.XpathContext ctx);
-
-	/**
-	 * Enter a parse tree produced by {@link XPathParser#condition}.
-	 * @param ctx the parse tree
-	 */
-	void enterCondition(@NotNull XPathParser.ConditionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link XPathParser#condition}.
-	 * @param ctx the parse tree
-	 */
-	void exitCondition(@NotNull XPathParser.ConditionContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link XPathParser#xquery}.
@@ -84,4 +62,26 @@ public interface XPathListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAbsolutePath(@NotNull XPathParser.AbsolutePathContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link XPathParser#attName}.
+	 * @param ctx the parse tree
+	 */
+	void enterAttName(@NotNull XPathParser.AttNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link XPathParser#attName}.
+	 * @param ctx the parse tree
+	 */
+	void exitAttName(@NotNull XPathParser.AttNameContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link XPathParser#tagName}.
+	 * @param ctx the parse tree
+	 */
+	void enterTagName(@NotNull XPathParser.TagNameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link XPathParser#tagName}.
+	 * @param ctx the parse tree
+	 */
+	void exitTagName(@NotNull XPathParser.TagNameContext ctx);
 }
