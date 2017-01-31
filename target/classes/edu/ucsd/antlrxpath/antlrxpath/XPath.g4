@@ -8,7 +8,10 @@ grammar XPath;
 
 xquery:	xpath EOF;
 
-xpath: absolutePath ('/' | '//') relativePath;
+xpath: absolutePath (selfNode | descendantOrSelf) relativePath;
+selfNode: SLASH;
+descendantOrSelf: DSLASH;
+
 
 /*
  * ====================
@@ -16,9 +19,9 @@ xpath: absolutePath ('/' | '//') relativePath;
  * ====================
  */
 
-absolutePath: 'doc("' Filename '")';
+absolutePath: 'doc("' filename '")';
 
-Filename: [a-zA-Z0-9_'.''/']+ '.xml';
+filename: FNAME;
 
 /*
  * ====================
@@ -28,38 +31,60 @@ Filename: [a-zA-Z0-9_'.''/']+ '.xml';
 
 relativePath:
           tagName
-        | '*'
-        | '.'
-        | '..'
-        | 'text()'
-        | '@' attName
+        | all
+        | self
+        | parent
+        | text
+        | attTest
         | '(' relativePath ')'
-        | relativePath ('/' | '//') relativePath
+        | relativePath (selfNode | descendantOrSelf) relativePath
         | relativePath '[' pathFilter ']'
-        | relativePath ',' relativePath
+        | relativePath concatPath
         ;
 
+attTest: '@' attName;
 tagName: NAME;
+all: ASTERISK;
+self: DOT;
 attName: NAME;
-
-NAME: [a-zA-Z0-9]+;
+parent: UPPER;
+text: TEXTFUNCTION;
+concatPath: ',' relativePath;
 
 
 /*
- * ====================
+ * =====================
  * Path filter
- * ====================
+ * =====================
  */
 
 pathFilter:
           relativePath
         | relativePath (ValueEq | IDEq) relativePath
         | '(' pathFilter ')'
+        | nagatePathFilter
         | pathFilter (AND | OR) pathFilter
-        | 'not' pathFilter
         ;
+        
+nagatePathFilter: NOT pathFilter;
 
+/*
+ * =====================
+ * Constant and String
+ * =====================
+ */
+ 
+FNAME: [a-zA-Z0-9_'.''/']+ '.xml';
+SLASH: '/';
+DSLASH: '//';
+CONCAT: ',';
 ValueEq: '=' | 'eq';
 IDEq: '==' | 'is';
 AND: 'and';
 OR: 'or';
+ASTERISK: '*';
+DOT: '.';
+UPPER: '..';
+NAME: [a-zA-Z0-9]+;
+TEXTFUNCTION: 'text()';
+NOT: 'not';

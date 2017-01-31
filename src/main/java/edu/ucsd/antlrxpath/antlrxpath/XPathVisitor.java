@@ -12,11 +12,67 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface XPathVisitor<T> extends ParseTreeVisitor<T> {
 	/**
+	 * Visit a parse tree produced by {@link XPathParser#all}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAll(@NotNull XPathParser.AllContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link XPathParser#parent}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParent(@NotNull XPathParser.ParentContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link XPathParser#xquery}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitXquery(@NotNull XPathParser.XqueryContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link XPathParser#selfNode}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelfNode(@NotNull XPathParser.SelfNodeContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link XPathParser#attTest}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAttTest(@NotNull XPathParser.AttTestContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link XPathParser#tagName}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTagName(@NotNull XPathParser.TagNameContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link XPathParser#descendantOrSelf}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDescendantOrSelf(@NotNull XPathParser.DescendantOrSelfContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link XPathParser#pathFilter}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitPathFilter(@NotNull XPathParser.PathFilterContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link XPathParser#nagatePathFilter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNagatePathFilter(@NotNull XPathParser.NagatePathFilterContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link XPathParser#xpath}.
@@ -26,11 +82,18 @@ public interface XPathVisitor<T> extends ParseTreeVisitor<T> {
 	T visitXpath(@NotNull XPathParser.XpathContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link XPathParser#xquery}.
+	 * Visit a parse tree produced by {@link XPathParser#concatPath}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitXquery(@NotNull XPathParser.XqueryContext ctx);
+	T visitConcatPath(@NotNull XPathParser.ConcatPathContext ctx);
+
+	/**
+	 * Visit a parse tree produced by {@link XPathParser#filename}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFilename(@NotNull XPathParser.FilenameContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link XPathParser#relativePath}.
@@ -47,6 +110,13 @@ public interface XPathVisitor<T> extends ParseTreeVisitor<T> {
 	T visitAbsolutePath(@NotNull XPathParser.AbsolutePathContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link XPathParser#self}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelf(@NotNull XPathParser.SelfContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link XPathParser#attName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -54,9 +124,9 @@ public interface XPathVisitor<T> extends ParseTreeVisitor<T> {
 	T visitAttName(@NotNull XPathParser.AttNameContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link XPathParser#tagName}.
+	 * Visit a parse tree produced by {@link XPathParser#text}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTagName(@NotNull XPathParser.TagNameContext ctx);
+	T visitText(@NotNull XPathParser.TextContext ctx);
 }
