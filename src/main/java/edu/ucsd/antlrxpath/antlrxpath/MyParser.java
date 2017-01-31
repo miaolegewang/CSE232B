@@ -55,10 +55,82 @@ public class MyParser extends XPathBaseListener{
 		}
 	}
 	
+	
+	
+	
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParent(@NotNull XPathParser.ParentContext ctx) {
+		for(int i = 0; i < result.size(); i++){
+			if(result.get(i).getNodeType() != 1 && result.get(i).getNodeValue() == ctx.getText()){
+				result.remove(i);
+			}
+		}
+	}
+
 	/**
 	 *
 	 * This function match 
 	 */
 	@Override public void exitTagName(@NotNull XPathParser.TagNameContext ctx) { 
+		for(int i = 0; i < result.size(); i++){
+			if(result.get(i).getNodeType() != 1 && result.get(i).getNodeValue() == ctx.getText()){
+				result.remove(i);
+			}
+		}
 	}
+	
+	/**
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitText(@NotNull XPathParser.TextContext ctx) {
+		for(int i = 0; i < result.size(); i++){
+			if(result.get(i).getNodeType() != Node.TEXT_NODE ){
+				result.remove(i);
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAttName(@NotNull XPathParser.AttNameContext ctx) { 
+		for(int i = 0; i < result.size(); i++){
+			if(result.get(i).getNodeType() != Node.ATTRIBUTE_NODE || !result.get(i).getNodeName().equals(ctx.getText())){
+				result.remove(i);
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAll(@NotNull XPathParser.AllContext ctx) { 
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSelf(@NotNull XPathParser.SelfContext ctx) {
+	}
+	
+
+
+
 }
