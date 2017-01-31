@@ -8,8 +8,8 @@ grammar XPath;
 
 xquery:	xpath EOF;
 
-xpath: absolutePath (selfNode | descendantOrSelf) relativePath;
-selfNode: SLASH;
+xpath: absolutePath (descendant | descendantOrSelf) relativePath;
+descendant: SLASH;
 descendantOrSelf: DSLASH;
 
 
@@ -37,7 +37,7 @@ relativePath:
         | text
         | attTest
         | '(' relativePath ')'
-        | relativePath (selfNode | descendantOrSelf) relativePath
+        | relativePath (descendant | descendantOrSelf) relativePath
         | relativePath '[' pathFilter ']'
         | relativePath concatPath
         ;

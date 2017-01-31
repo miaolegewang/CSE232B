@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import org.antlr.v4.runtime.misc.NotNull;
 import edu.ucsd.xmlparser.*;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class MyParser extends XPathBaseListener{
 	
-	private ArrayList<Node> result;
+	private ArrayList<Node> result = new ArrayList<Node>();
 	
 	/**
 	 * 
@@ -36,6 +37,7 @@ public class MyParser extends XPathBaseListener{
 	@Override public void exitFilename(@NotNull XPathParser.FilenameContext ctx) { 
 		Document tmp = DomParser.parse(ctx.getText());
 		result.add(tmp.getDocumentElement());
+		NodeList children = tmp.getDocumentElement().getChildNodes();
 	}
 	
 	/**
@@ -55,9 +57,23 @@ public class MyParser extends XPathBaseListener{
 		}
 	}
 	
-	
-	
-	
+	/**
+	 *
+	 * Retrieve the immediate descendant from itself
+	 */
+	@Override public void exitDescendant(@NotNull XPathParser.DescendantContext ctx) { 
+		ArrayList<Node> tmp = new ArrayList<Node>(result);
+		System.out.println(tmp.size());
+		for(int i = 0; i < tmp.size(); i++){
+			NodeList children = tmp.get(i).getChildNodes();
+			for(int j = 0; j < children.getLength(); i++){
+				//System.out.println(children.item(j).getNodeType());
+				if(children.item(j).getNodeType() == Node.ELEMENT_NODE)
+					System.out.println(children.item(j).getNodeName());
+				result.add(children.item(j));
+			}
+		}
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -65,22 +81,26 @@ public class MyParser extends XPathBaseListener{
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitParent(@NotNull XPathParser.ParentContext ctx) {
+		ArrayList<Node> tmp = new ArrayList<Node>();
 		for(int i = 0; i < result.size(); i++){
-			if(result.get(i).getNodeType() != 1 && result.get(i).getNodeValue() == ctx.getText()){
-				result.remove(i);
+			Node localNode = result.get(i).getParentNode();
+			if(localNode != null){
+				tmp.add(localNode);
 			}
 		}
+		result = tmp;
 	}
 
 	/**
 	 *
 	 * This function match 
 	 */
-	@Override public void exitTagName(@NotNull XPathParser.TagNameContext ctx) { 
-		for(int i = 0; i < result.size(); i++){
-			if(result.get(i).getNodeType() != 1 && result.get(i).getNodeValue() == ctx.getText()){
+	@Override public void exitTagName(@NotNull XPathParser.TagNameContext ctx) {
+		System.out.println(ctx.getText());
+		for(int i = 0; i < result.size();){
+			if(result.get(i).getNodeType() != Node.ELEMENT_NODE || !result.get(i).getNodeValue().equals(ctx.getText())){
 				result.remove(i);
-			}
+			} else i++;
 		}
 	}
 	
@@ -108,28 +128,6 @@ public class MyParser extends XPathBaseListener{
 			}
 		}
 	}
-	
-	
-	
-	
-	
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAll(@NotNull XPathParser.AllContext ctx) { 
-		
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSelf(@NotNull XPathParser.SelfContext ctx) {
-	}
-	
 
 
 

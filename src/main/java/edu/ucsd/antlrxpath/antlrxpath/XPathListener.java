@@ -42,15 +42,15 @@ public interface XPathListener extends ParseTreeListener {
 	void exitXquery(@NotNull XPathParser.XqueryContext ctx);
 
 	/**
-	 * Enter a parse tree produced by {@link XPathParser#selfNode}.
+	 * Enter a parse tree produced by {@link XPathParser#descendant}.
 	 * @param ctx the parse tree
 	 */
-	void enterSelfNode(@NotNull XPathParser.SelfNodeContext ctx);
+	void enterDescendant(@NotNull XPathParser.DescendantContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link XPathParser#selfNode}.
+	 * Exit a parse tree produced by {@link XPathParser#descendant}.
 	 * @param ctx the parse tree
 	 */
-	void exitSelfNode(@NotNull XPathParser.SelfNodeContext ctx);
+	void exitDescendant(@NotNull XPathParser.DescendantContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link XPathParser#attTest}.

@@ -19,7 +19,7 @@ public class App
          */
     	ArrayList<String> testcases = new ArrayList<String>();
     	// Add test case here
-    	testcases.add("doc(\"j_caesar.xml\")//ACT/TITLE");
+    	testcases.add("doc(\"j_caesar.xml\")/TITLE");
     	
     	XPathEval xquery = new XPathEval();
     	for(int i = 0; i < testcases.size(); i++){

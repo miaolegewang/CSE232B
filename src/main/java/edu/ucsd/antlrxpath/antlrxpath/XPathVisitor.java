@@ -33,11 +33,11 @@ public interface XPathVisitor<T> extends ParseTreeVisitor<T> {
 	T visitXquery(@NotNull XPathParser.XqueryContext ctx);
 
 	/**
-	 * Visit a parse tree produced by {@link XPathParser#selfNode}.
+	 * Visit a parse tree produced by {@link XPathParser#descendant}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSelfNode(@NotNull XPathParser.SelfNodeContext ctx);
+	T visitDescendant(@NotNull XPathParser.DescendantContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link XPathParser#attTest}.

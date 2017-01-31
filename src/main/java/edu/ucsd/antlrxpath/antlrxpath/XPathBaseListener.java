@@ -56,13 +56,13 @@ public class XPathBaseListener implements XPathListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSelfNode(@NotNull XPathParser.SelfNodeContext ctx) { }
+	@Override public void enterDescendant(@NotNull XPathParser.DescendantContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSelfNode(@NotNull XPathParser.SelfNodeContext ctx) { }
+	@Override public void exitDescendant(@NotNull XPathParser.DescendantContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

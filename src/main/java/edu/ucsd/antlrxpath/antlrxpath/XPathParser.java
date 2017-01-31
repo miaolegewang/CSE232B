@@ -26,12 +26,12 @@ public class XPathParser extends Parser {
 		"'..'", "NAME", "'text()'", "'not'"
 	};
 	public static final int
-		RULE_xquery = 0, RULE_xpath = 1, RULE_selfNode = 2, RULE_descendantOrSelf = 3, 
+		RULE_xquery = 0, RULE_xpath = 1, RULE_descendant = 2, RULE_descendantOrSelf = 3, 
 		RULE_absolutePath = 4, RULE_filename = 5, RULE_relativePath = 6, RULE_attTest = 7, 
 		RULE_tagName = 8, RULE_all = 9, RULE_self = 10, RULE_attName = 11, RULE_parent = 12, 
 		RULE_text = 13, RULE_concatPath = 14, RULE_pathFilter = 15, RULE_nagatePathFilter = 16;
 	public static final String[] ruleNames = {
-		"xquery", "xpath", "selfNode", "descendantOrSelf", "absolutePath", "filename", 
+		"xquery", "xpath", "descendant", "descendantOrSelf", "absolutePath", "filename", 
 		"relativePath", "attTest", "tagName", "all", "self", "attName", "parent", 
 		"text", "concatPath", "pathFilter", "nagatePathFilter"
 	};
@@ -101,9 +101,6 @@ public class XPathParser extends Parser {
 	}
 
 	public static class XpathContext extends ParserRuleContext {
-		public SelfNodeContext selfNode() {
-			return getRuleContext(SelfNodeContext.class,0);
-		}
 		public AbsolutePathContext absolutePath() {
 			return getRuleContext(AbsolutePathContext.class,0);
 		}
@@ -112,6 +109,9 @@ public class XPathParser extends Parser {
 		}
 		public DescendantOrSelfContext descendantOrSelf() {
 			return getRuleContext(DescendantOrSelfContext.class,0);
+		}
+		public DescendantContext descendant() {
+			return getRuleContext(DescendantContext.class,0);
 		}
 		public XpathContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -143,7 +143,7 @@ public class XPathParser extends Parser {
 			switch (_input.LA(1)) {
 			case SLASH:
 				{
-				setState(38); selfNode();
+				setState(38); descendant();
 				}
 				break;
 			case DSLASH:
@@ -168,30 +168,30 @@ public class XPathParser extends Parser {
 		return _localctx;
 	}
 
-	public static class SelfNodeContext extends ParserRuleContext {
+	public static class DescendantContext extends ParserRuleContext {
 		public TerminalNode SLASH() { return getToken(XPathParser.SLASH, 0); }
-		public SelfNodeContext(ParserRuleContext parent, int invokingState) {
+		public DescendantContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_selfNode; }
+		@Override public int getRuleIndex() { return RULE_descendant; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof XPathListener ) ((XPathListener)listener).enterSelfNode(this);
+			if ( listener instanceof XPathListener ) ((XPathListener)listener).enterDescendant(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof XPathListener ) ((XPathListener)listener).exitSelfNode(this);
+			if ( listener instanceof XPathListener ) ((XPathListener)listener).exitDescendant(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof XPathVisitor ) return ((XPathVisitor<? extends T>)visitor).visitSelfNode(this);
+			if ( visitor instanceof XPathVisitor ) return ((XPathVisitor<? extends T>)visitor).visitDescendant(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final SelfNodeContext selfNode() throws RecognitionException {
-		SelfNodeContext _localctx = new SelfNodeContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_selfNode);
+	public final DescendantContext descendant() throws RecognitionException {
+		DescendantContext _localctx = new DescendantContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_descendant);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -343,9 +343,6 @@ public class XPathParser extends Parser {
 		public ParentContext parent() {
 			return getRuleContext(ParentContext.class,0);
 		}
-		public SelfNodeContext selfNode() {
-			return getRuleContext(SelfNodeContext.class,0);
-		}
 		public List<RelativePathContext> relativePath() {
 			return getRuleContexts(RelativePathContext.class);
 		}
@@ -369,6 +366,9 @@ public class XPathParser extends Parser {
 		}
 		public RelativePathContext relativePath(int i) {
 			return getRuleContext(RelativePathContext.class,i);
+		}
+		public DescendantContext descendant() {
+			return getRuleContext(DescendantContext.class,0);
 		}
 		public SelfContext self() {
 			return getRuleContext(SelfContext.class,0);
@@ -470,7 +470,7 @@ public class XPathParser extends Parser {
 						switch (_input.LA(1)) {
 						case SLASH:
 							{
-							setState(68); selfNode();
+							setState(68); descendant();
 							}
 							break;
 						case DSLASH:

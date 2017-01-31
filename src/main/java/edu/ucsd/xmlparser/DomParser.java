@@ -36,6 +36,7 @@ public class DomParser {
 	
 	public static void WriteXMLFile(ArrayList<Node> result, String fileName){
 		try{
+			System.out.println("Start writing xml file");
 			Document doc = createDoc(result);
 			TransformerFactory tmfactory = TransformerFactory.newInstance();
 			Transformer transformer = tmfactory.newTransformer();
