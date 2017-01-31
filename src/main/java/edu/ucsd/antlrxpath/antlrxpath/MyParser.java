@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import edu.ucsd.xmlparser.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class MyParser extends XPathBaseListener{
 	
@@ -44,5 +45,20 @@ public class MyParser extends XPathBaseListener{
 	 */
 	@Override public void exitDescendantOrSelf(@NotNull XPathParser.DescendantOrSelfContext ctx) { 
 		int startIdx = 0, endIdx = result.size();
+		for(; startIdx < endIdx; startIdx++){
+			Node tmp = result.get(startIdx);
+			NodeList children = tmp.getChildNodes();
+			for(int i = 0; i < children.getLength(); i++){
+				result.add(children.item(i));
+			}
+			endIdx = result.size();
+		}
+	}
+	
+	/**
+	 *
+	 * This function match 
+	 */
+	@Override public void exitTagName(@NotNull XPathParser.TagNameContext ctx) { 
 	}
 }
