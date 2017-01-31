@@ -63,13 +63,10 @@ public class MyParser extends XPathBaseListener{
 	 */
 	@Override public void exitDescendant(@NotNull XPathParser.DescendantContext ctx) { 
 		ArrayList<Node> tmp = new ArrayList<Node>(result);
-		System.out.println(tmp.size());
+		result.clear();
 		for(int i = 0; i < tmp.size(); i++){
 			NodeList children = tmp.get(i).getChildNodes();
-			for(int j = 0; j < children.getLength(); i++){
-				//System.out.println(children.item(j).getNodeType());
-				if(children.item(j).getNodeType() == Node.ELEMENT_NODE)
-					System.out.println(children.item(j).getNodeName());
+			for(int j = 0; j < children.getLength(); j++){
 				result.add(children.item(j));
 			}
 		}
@@ -96,11 +93,12 @@ public class MyParser extends XPathBaseListener{
 	 * This function match 
 	 */
 	@Override public void exitTagName(@NotNull XPathParser.TagNameContext ctx) {
-		System.out.println(ctx.getText());
-		for(int i = 0; i < result.size();){
-			if(result.get(i).getNodeType() != Node.ELEMENT_NODE || !result.get(i).getNodeValue().equals(ctx.getText())){
-				result.remove(i);
-			} else i++;
+		ArrayList<Node> tmp = new ArrayList<Node>(result);
+		result.clear();
+		for(int i = 0; i < tmp.size(); i++){
+			if(tmp.get(i).getNodeType() == Node.ELEMENT_NODE && tmp.get(i).getNodeName().equals(ctx.getText())){
+				result.add(tmp.get(i));
+			}
 		}
 	}
 	

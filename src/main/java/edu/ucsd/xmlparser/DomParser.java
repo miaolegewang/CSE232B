@@ -36,7 +36,6 @@ public class DomParser {
 	
 	public static void WriteXMLFile(ArrayList<Node> result, String fileName){
 		try{
-			System.out.println("Start writing xml file");
 			Document doc = createDoc(result);
 			TransformerFactory tmfactory = TransformerFactory.newInstance();
 			Transformer transformer = tmfactory.newTransformer();
@@ -61,9 +60,12 @@ public class DomParser {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.newDocument();
+			Node root = doc.createElement("Result");
 			for(int i = 0; i < listOfNodes.size(); i++){
-				doc.appendChild(listOfNodes.get(i));
+				Node tmp = doc.importNode(listOfNodes.get(i), true);
+				root.appendChild(tmp);
 			}
+			doc.appendChild(root);
 			return doc;
 		} catch (Exception e){
 			e.printStackTrace();
