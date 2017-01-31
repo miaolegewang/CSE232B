@@ -63,10 +63,13 @@ public class MyParser extends XPathBaseListener{
 	 */
 	@Override public void exitDescendant(@NotNull XPathParser.DescendantContext ctx) { 
 		ArrayList<Node> tmp = new ArrayList<Node>(result);
-		result.clear();
+		System.out.println(tmp.size());
 		for(int i = 0; i < tmp.size(); i++){
 			NodeList children = tmp.get(i).getChildNodes();
 			for(int j = 0; j < children.getLength(); j++){
+				//System.out.println(children.item(j).getNodeType());
+				if(children.item(j).getNodeType() == Node.ELEMENT_NODE)
+					System.out.println(children.item(j).getNodeName());
 				result.add(children.item(j));
 			}
 		}
@@ -93,12 +96,13 @@ public class MyParser extends XPathBaseListener{
 	 * This function match 
 	 */
 	@Override public void exitTagName(@NotNull XPathParser.TagNameContext ctx) {
-		ArrayList<Node> tmp = new ArrayList<Node>(result);
-		result.clear();
-		for(int i = 0; i < tmp.size(); i++){
-			if(tmp.get(i).getNodeType() == Node.ELEMENT_NODE && tmp.get(i).getNodeName().equals(ctx.getText())){
-				result.add(tmp.get(i));
-			}
+
+		for(int i = 0; i < result.size();){
+			System.out.println( " : " );
+			System.out.println(result.get(i));
+			if(result.get(i).getNodeType() != Node.ELEMENT_NODE || !result.get(i).getNodeName().equals(ctx.getText())){
+				result.remove(i);
+			} else i++;
 		}
 	}
 	
@@ -107,10 +111,10 @@ public class MyParser extends XPathBaseListener{
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitText(@NotNull XPathParser.TextContext ctx) {
-		for(int i = 0; i < result.size(); i++){
+		for(int i = 0; i < result.size(); ){
 			if(result.get(i).getNodeType() != Node.TEXT_NODE ){
 				result.remove(i);
-			}
+			}else i++;
 		}
 	}
 
@@ -120,10 +124,10 @@ public class MyParser extends XPathBaseListener{
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAttName(@NotNull XPathParser.AttNameContext ctx) { 
-		for(int i = 0; i < result.size(); i++){
+		for(int i = 0; i < result.size();){
 			if(result.get(i).getNodeType() != Node.ATTRIBUTE_NODE || !result.get(i).getNodeName().equals(ctx.getText())){
 				result.remove(i);
-			}
+			}else i++;
 		}
 	}
 
