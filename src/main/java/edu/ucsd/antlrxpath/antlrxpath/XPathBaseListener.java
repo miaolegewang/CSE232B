@@ -43,6 +43,32 @@ public class XPathBaseListener implements XPathListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDescendantPath(@NotNull XPathParser.DescendantPathContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDescendantPath(@NotNull XPathParser.DescendantPathContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPathIdEq(@NotNull XPathParser.PathIdEqContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPathIdEq(@NotNull XPathParser.PathIdEqContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterXquery(@NotNull XPathParser.XqueryContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -50,6 +76,19 @@ public class XPathBaseListener implements XPathListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitXquery(@NotNull XPathParser.XqueryContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterConditionFilter(@NotNull XPathParser.ConditionFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConditionFilter(@NotNull XPathParser.ConditionFilterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -108,32 +147,6 @@ public class XPathBaseListener implements XPathListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPathFilter(@NotNull XPathParser.PathFilterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitPathFilter(@NotNull XPathParser.PathFilterContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNagatePathFilter(@NotNull XPathParser.NagatePathFilterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNagatePathFilter(@NotNull XPathParser.NagatePathFilterContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterXpath(@NotNull XPathParser.XpathContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -141,19 +154,6 @@ public class XPathBaseListener implements XPathListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitXpath(@NotNull XPathParser.XpathContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterConcatPath(@NotNull XPathParser.ConcatPathContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitConcatPath(@NotNull XPathParser.ConcatPathContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -173,13 +173,13 @@ public class XPathBaseListener implements XPathListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterRelativePath(@NotNull XPathParser.RelativePathContext ctx) { }
+	@Override public void enterFirstFunc(@NotNull XPathParser.FirstFuncContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitRelativePath(@NotNull XPathParser.RelativePathContext ctx) { }
+	@Override public void exitFirstFunc(@NotNull XPathParser.FirstFuncContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -212,6 +212,45 @@ public class XPathBaseListener implements XPathListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterPathSequence(@NotNull XPathParser.PathSequenceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPathSequence(@NotNull XPathParser.PathSequenceContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPathWithFilter(@NotNull XPathParser.PathWithFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPathWithFilter(@NotNull XPathParser.PathWithFilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNegatvePathFilter(@NotNull XPathParser.NegatvePathFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNegatvePathFilter(@NotNull XPathParser.NegatvePathFilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAttName(@NotNull XPathParser.AttNameContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -232,6 +271,45 @@ public class XPathBaseListener implements XPathListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitText(@NotNull XPathParser.TextContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDescendantExistence(@NotNull XPathParser.DescendantExistenceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDescendantExistence(@NotNull XPathParser.DescendantExistenceContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterPathValueEq(@NotNull XPathParser.PathValueEqContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitPathValueEq(@NotNull XPathParser.PathValueEqContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFirstPath(@NotNull XPathParser.FirstPathContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFirstPath(@NotNull XPathParser.FirstPathContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

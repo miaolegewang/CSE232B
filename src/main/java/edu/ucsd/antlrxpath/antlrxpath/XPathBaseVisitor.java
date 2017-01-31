@@ -34,7 +34,31 @@ public class XPathBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitDescendantPath(@NotNull XPathParser.DescendantPathContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitPathIdEq(@NotNull XPathParser.PathIdEqContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitXquery(@NotNull XPathParser.XqueryContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitConditionFilter(@NotNull XPathParser.ConditionFilterContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -74,31 +98,7 @@ public class XPathBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPathFilter(@NotNull XPathParser.PathFilterContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitNagatePathFilter(@NotNull XPathParser.NagatePathFilterContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
 	@Override public T visitXpath(@NotNull XPathParser.XpathContext ctx) { return visitChildren(ctx); }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation returns the result of calling
-	 * {@link #visitChildren} on {@code ctx}.</p>
-	 */
-	@Override public T visitConcatPath(@NotNull XPathParser.ConcatPathContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -114,7 +114,7 @@ public class XPathBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitRelativePath(@NotNull XPathParser.RelativePathContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFirstFunc(@NotNull XPathParser.FirstFuncContext ctx) { return visitChildren(ctx); }
 
 	/**
 	 * {@inheritDoc}
@@ -138,6 +138,30 @@ public class XPathBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitPathSequence(@NotNull XPathParser.PathSequenceContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitPathWithFilter(@NotNull XPathParser.PathWithFilterContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitNegatvePathFilter(@NotNull XPathParser.NegatvePathFilterContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitAttName(@NotNull XPathParser.AttNameContext ctx) { return visitChildren(ctx); }
 
 	/**
@@ -147,4 +171,28 @@ public class XPathBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitText(@NotNull XPathParser.TextContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDescendantExistence(@NotNull XPathParser.DescendantExistenceContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitPathValueEq(@NotNull XPathParser.PathValueEqContext ctx) { return visitChildren(ctx); }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitFirstPath(@NotNull XPathParser.FirstPathContext ctx) { return visitChildren(ctx); }
 }

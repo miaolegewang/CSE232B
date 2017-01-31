@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.antlr.v4.runtime.misc.NotNull;
 import edu.ucsd.xmlparser.*;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -36,8 +35,7 @@ public class MyParser extends XPathBaseListener{
 	 */
 	@Override public void exitFilename(@NotNull XPathParser.FilenameContext ctx) { 
 		Document tmp = DomParser.parse(ctx.getText());
-		result.add(tmp.getDocumentElement());
-		NodeList children = tmp.getDocumentElement().getChildNodes();
+		result.add(tmp);
 	}
 	
 	/**
@@ -48,6 +46,13 @@ public class MyParser extends XPathBaseListener{
 	@Override public void exitDescendantOrSelf(@NotNull XPathParser.DescendantOrSelfContext ctx) { 
 		int startIdx = 0, endIdx = result.size();
 		for(; startIdx < endIdx; startIdx++){
+			if(result.get(startIdx).getNodeType() == Node.DOCUMENT_TYPE_NODE){
+				Document root = (Document)result.get(startIdx);
+				result.remove(startIdx);
+				startIdx--;
+				result.add(root.getDocumentElement());
+				continue;
+			}
 			Node tmp = result.get(startIdx);
 			NodeList children = tmp.getChildNodes();
 			for(int i = 0; i < children.getLength(); i++){
@@ -65,6 +70,11 @@ public class MyParser extends XPathBaseListener{
 		ArrayList<Node> tmp = new ArrayList<Node>(result);
 		System.out.println(tmp.size());
 		for(int i = 0; i < tmp.size(); i++){
+			if(tmp.get(i).getNodeType() == Node.DOCUMENT_TYPE_NODE){
+				Document root = (Document)tmp.get(i);
+				result.add(root.getDocumentElement());
+				continue;
+			}
 			NodeList children = tmp.get(i).getChildNodes();
 			for(int j = 0; j < children.getLength(); j++){
 				//System.out.println(children.item(j).getNodeType());

@@ -30,18 +30,21 @@ filename: FNAME;
  */
 
 relativePath:
-          tagName
-        | all
-        | self
-        | parent
-        | text
-        | attTest
-        | '(' relativePath ')'
-        | relativePath (descendant | descendantOrSelf) relativePath
-        | relativePath '[' pathFilter ']'
-        | relativePath concatPath
+          NAME  		#tagName
+        | ASTERISK  	#all
+        | DOT			#self
+        | UPPER			#parent
+        | TEXTFUNCTION	#text			
+        | '@' attName	#attTest
+        | '(' relativePath ')'	#firstPath
+        | relativePath (descendant | descendantOrSelf) relativePath  #descendantPath
+        | relativePath '[' pathFilter ']'	#pathWithFilter
+        | relativePath ',' relativePath 	#pathSequence
         ;
 
+attName: NAME;
+
+/*
 attTest: '@' attName;
 tagName: NAME;
 all: ASTERISK;
@@ -50,7 +53,7 @@ attName: NAME;
 parent: UPPER;
 text: TEXTFUNCTION;
 concatPath: ',' relativePath;
-
+*/
 
 /*
  * =====================
@@ -59,21 +62,20 @@ concatPath: ',' relativePath;
  */
 
 pathFilter:
-          relativePath
-        | relativePath (ValueEq | IDEq) relativePath
-        | '(' pathFilter ')'
-        | nagatePathFilter
-        | pathFilter (AND | OR) pathFilter
+          relativePath			#descendantExistence
+        | relativePath ValueEq relativePath		#pathValueEq
+        | relativePath IDEq relativePath		#pathIdEq
+        | '(' pathFilter ')'					#firstFunc
+        | NOT pathFilter						#negatvePathFilter
+        | pathFilter (AND | OR) pathFilter		#conditionFilter
         ;
-        
-nagatePathFilter: NOT pathFilter;
 
 /*
  * =====================
  * Constant and String
  * =====================
  */
- 
+
 FNAME: [a-zA-Z0-9_'.''/']+ '.xml';
 SLASH: '/';
 DSLASH: '//';
