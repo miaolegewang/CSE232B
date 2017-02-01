@@ -17,6 +17,16 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 	public List<Node> getResult(){
 		return result;
 	}
+	
+	private boolean isEqualList(List<Node> a, List<Node> b, boolean value){
+		if(a.size() != b.size())
+			return false;
+		for(int i = 0; i < a.size(); i++){
+			if(!(value && a.get(i).isEqualNode(b.get(i))) || !(!value && a.get(i).isSameNode(b.get(i))))
+				return false;
+		}
+		return true;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -163,7 +173,7 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 				result.remove(i);
 			} else i++;
 		}
-		return visitChildren(ctx); 
+		return visitChildren(ctx);
 	}
 
 	/**
@@ -179,5 +189,133 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 		}
 		return visitChildren(ctx);
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitDescendantExistence(@NotNull XPathParser.DescendantExistenceContext ctx) {
+		List<Node> nodes = new ArrayList<Node>(result);
+		result.clear();
+		for(int i = 0; i < nodes.size();){
+			result.add(nodes.get(i));
+			visit(ctx.relativePath());
+			if(result.size() == 0){
+				nodes.remove(i);
+			} else i++;
+			result.clear();
+		}
+		result = nodes;
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitNegatvePathFilter(@NotNull XPathParser.NegatvePathFilterContext ctx) {
+		List<Node> nodes = new ArrayList<Node>(result);
+		visit(ctx.pathFilter());
+		for(int i = 0; i < result.size(); i++){
+			nodes.remove(result.get(i));
+		}
+		result = nodes;
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitAndFilter(@NotNull XPathParser.AndFilterContext ctx) {
+		List<Node> nodes = new ArrayList<Node>(result);
+		visit(ctx.pathFilter(0));
+		List<Node> r1 = new ArrayList<Node>(result);
+		result = nodes;
+		visit(ctx.pathFilter(1));
+		for(int i = 0; i < result.size();){
+			if(!r1.contains(result.get(i))){
+				result.remove(i);
+			} else i++;
+		}
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitOrFilter(@NotNull XPathParser.OrFilterContext ctx) {
+		List<Node> nodes = new ArrayList<Node>(result);
+		visit(ctx.pathFilter(0));
+		List<Node> r1 = new ArrayList<Node>(result);
+		result = nodes;
+		visit(ctx.pathFilter(1));
+		for(int i = 0; i < r1.size(); i++){
+			if(!result.contains(nodes.get(i))){
+				result.add(nodes.get(i));
+			}
+		}
+		return null;
+	} 
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitPathIdEq(@NotNull XPathParser.PathIdEqContext ctx) {
+		List<Node> nodes = new ArrayList<Node>(result);
+		for(int i = 0; i < nodes.size(); ){
+			result.clear();
+			result.add(nodes.get(i));
+			visit(ctx.relativePath(0));
+			List<Node> r1 = new ArrayList<Node>(result);
+			result.clear();
+			result.add(nodes.get(i));
+			visit(ctx.relativePath(1));
+			if(!isEqualList(result, r1, false)){
+				nodes.remove(i);
+				continue;
+			}
+			i++;
+		}
+		result = nodes;
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitPathValueEq(@NotNull XPathParser.PathValueEqContext ctx) {
+		List<Node> nodes = new ArrayList<Node>(result);
+		for(int i = 0; i < nodes.size(); ){
+			result.clear();
+			result.add(nodes.get(i));
+			visit(ctx.relativePath(0));
+			List<Node> r1 = new ArrayList<Node>(result);
+			result.clear();
+			result.add(nodes.get(i));
+			visit(ctx.relativePath(1));
+			if(!isEqualList(result, r1, true)){
+				nodes.remove(i);
+				continue;
+			}
+			i++;
+		}
+		result = nodes;
+		return null;
+	}
 }

@@ -44,19 +44,19 @@ public interface XPathVisitor<T> extends ParseTreeVisitor<T> {
 	T visitPathIdEq(@NotNull XPathParser.PathIdEqContext ctx);
 
 	/**
+	 * Visit a parse tree produced by the {@code andFilter}
+	 * labeled alternative in {@link XPathParser#pathFilter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAndFilter(@NotNull XPathParser.AndFilterContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link XPathParser#xquery}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitXquery(@NotNull XPathParser.XqueryContext ctx);
-
-	/**
-	 * Visit a parse tree produced by the {@code conditionFilter}
-	 * labeled alternative in {@link XPathParser#pathFilter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitConditionFilter(@NotNull XPathParser.ConditionFilterContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link XPathParser#descendant}.
@@ -80,6 +80,14 @@ public interface XPathVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTagName(@NotNull XPathParser.TagNameContext ctx);
+
+	/**
+	 * Visit a parse tree produced by the {@code orFilter}
+	 * labeled alternative in {@link XPathParser#pathFilter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOrFilter(@NotNull XPathParser.OrFilterContext ctx);
 
 	/**
 	 * Visit a parse tree produced by {@link XPathParser#descendantOrSelf}.

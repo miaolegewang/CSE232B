@@ -69,6 +69,19 @@ public class XPathBaseListener implements XPathListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAndFilter(@NotNull XPathParser.AndFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAndFilter(@NotNull XPathParser.AndFilterContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterXquery(@NotNull XPathParser.XqueryContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -76,19 +89,6 @@ public class XPathBaseListener implements XPathListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitXquery(@NotNull XPathParser.XqueryContext ctx) { }
-
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterConditionFilter(@NotNull XPathParser.ConditionFilterContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitConditionFilter(@NotNull XPathParser.ConditionFilterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
@@ -128,6 +128,19 @@ public class XPathBaseListener implements XPathListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTagName(@NotNull XPathParser.TagNameContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOrFilter(@NotNull XPathParser.OrFilterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOrFilter(@NotNull XPathParser.OrFilterContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -793,6 +793,29 @@ public class XPathParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class AndFilterContext extends PathFilterContext {
+		public List<PathFilterContext> pathFilter() {
+			return getRuleContexts(PathFilterContext.class);
+		}
+		public TerminalNode AND() { return getToken(XPathParser.AND, 0); }
+		public PathFilterContext pathFilter(int i) {
+			return getRuleContext(PathFilterContext.class,i);
+		}
+		public AndFilterContext(PathFilterContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof XPathListener ) ((XPathListener)listener).enterAndFilter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof XPathListener ) ((XPathListener)listener).exitAndFilter(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof XPathVisitor ) return ((XPathVisitor<? extends T>)visitor).visitAndFilter(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class NegatvePathFilterContext extends PathFilterContext {
 		public TerminalNode NOT() { return getToken(XPathParser.NOT, 0); }
 		public PathFilterContext pathFilter() {
@@ -810,30 +833,6 @@ public class XPathParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof XPathVisitor ) return ((XPathVisitor<? extends T>)visitor).visitNegatvePathFilter(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class ConditionFilterContext extends PathFilterContext {
-		public List<PathFilterContext> pathFilter() {
-			return getRuleContexts(PathFilterContext.class);
-		}
-		public TerminalNode AND() { return getToken(XPathParser.AND, 0); }
-		public PathFilterContext pathFilter(int i) {
-			return getRuleContext(PathFilterContext.class,i);
-		}
-		public TerminalNode OR() { return getToken(XPathParser.OR, 0); }
-		public ConditionFilterContext(PathFilterContext ctx) { copyFrom(ctx); }
-		@Override
-		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof XPathListener ) ((XPathListener)listener).enterConditionFilter(this);
-		}
-		@Override
-		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof XPathListener ) ((XPathListener)listener).exitConditionFilter(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof XPathVisitor ) return ((XPathVisitor<? extends T>)visitor).visitConditionFilter(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -879,6 +878,29 @@ public class XPathParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class OrFilterContext extends PathFilterContext {
+		public List<PathFilterContext> pathFilter() {
+			return getRuleContexts(PathFilterContext.class);
+		}
+		public PathFilterContext pathFilter(int i) {
+			return getRuleContext(PathFilterContext.class,i);
+		}
+		public TerminalNode OR() { return getToken(XPathParser.OR, 0); }
+		public OrFilterContext(PathFilterContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof XPathListener ) ((XPathListener)listener).enterOrFilter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof XPathListener ) ((XPathListener)listener).exitOrFilter(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof XPathVisitor ) return ((XPathVisitor<? extends T>)visitor).visitOrFilter(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 
 	public final PathFilterContext pathFilter() throws RecognitionException {
 		return pathFilter(0);
@@ -891,7 +913,6 @@ public class XPathParser extends Parser {
 		PathFilterContext _prevctx = _localctx;
 		int _startState = 16;
 		enterRecursionRule(_localctx, 16, RULE_pathFilter, _p);
-		int _la;
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
@@ -905,7 +926,7 @@ public class XPathParser extends Parser {
 				_prevctx = _localctx;
 
 				setState(75); match(NOT);
-				setState(76); pathFilter(2);
+				setState(76); pathFilter(3);
 				}
 				break;
 
@@ -952,32 +973,43 @@ public class XPathParser extends Parser {
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(97);
+			setState(100);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					{
-					_localctx = new ConditionFilterContext(new PathFilterContext(_parentctx, _parentState));
-					pushNewRecursionContext(_localctx, _startState, RULE_pathFilter);
-					setState(92);
-					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-					setState(93);
-					_la = _input.LA(1);
-					if ( !(_la==AND || _la==OR) ) {
-					_errHandler.recoverInline(this);
-					}
-					consume();
-					setState(94); pathFilter(2);
+					setState(98);
+					switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
+					case 1:
+						{
+						_localctx = new AndFilterContext(new PathFilterContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_pathFilter);
+						setState(92);
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						setState(93); match(AND);
+						setState(94); pathFilter(3);
+						}
+						break;
+
+					case 2:
+						{
+						_localctx = new OrFilterContext(new PathFilterContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_pathFilter);
+						setState(95);
+						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
+						setState(96); match(OR);
+						setState(97); pathFilter(2);
+						}
+						break;
 					}
 					} 
 				}
-				setState(99);
+				setState(102);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
 			}
 			}
 		}
@@ -1002,7 +1034,9 @@ public class XPathParser extends Parser {
 	}
 	private boolean pathFilter_sempred(PathFilterContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 3: return precpred(_ctx, 1);
+		case 3: return precpred(_ctx, 2);
+
+		case 4: return precpred(_ctx, 1);
 		}
 		return true;
 	}
@@ -1018,32 +1052,33 @@ public class XPathParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\27g\4\2\t\2\4\3\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\27j\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2"+
 		"\3\3\3\3\3\3\5\3\33\n\3\3\3\3\3\3\4\3\4\3\5\3\5\3\6\3\6\3\6\3\6\3\7\3"+
 		"\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\5\b\65\n\b\3\b\3\b"+
 		"\3\b\5\b:\n\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\7\bF\n\b\f\b\16"+
 		"\bI\13\b\3\t\3\t\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3\n\3"+
-		"\n\3\n\3\n\5\n]\n\n\3\n\3\n\3\n\7\nb\n\n\f\n\16\ne\13\n\3\n\2\4\16\22"+
-		"\13\2\4\6\b\n\f\16\20\22\2\3\3\2\20\21m\2\24\3\2\2\2\4\27\3\2\2\2\6\36"+
-		"\3\2\2\2\b \3\2\2\2\n\"\3\2\2\2\f&\3\2\2\2\16\64\3\2\2\2\20J\3\2\2\2\22"+
-		"\\\3\2\2\2\24\25\5\4\3\2\25\26\7\2\2\3\26\3\3\2\2\2\27\32\5\n\6\2\30\33"+
-		"\5\6\4\2\31\33\5\b\5\2\32\30\3\2\2\2\32\31\3\2\2\2\33\34\3\2\2\2\34\35"+
-		"\5\16\b\2\35\5\3\2\2\2\36\37\7\13\2\2\37\7\3\2\2\2 !\7\f\2\2!\t\3\2\2"+
-		"\2\"#\7\4\2\2#$\5\f\7\2$%\7\5\2\2%\13\3\2\2\2&\'\7\n\2\2\'\r\3\2\2\2("+
-		")\b\b\1\2)\65\7\25\2\2*\65\7\22\2\2+\65\7\23\2\2,\65\7\24\2\2-\65\7\26"+
-		"\2\2./\7\3\2\2/\65\5\20\t\2\60\61\7\6\2\2\61\62\5\16\b\2\62\63\7\7\2\2"+
-		"\63\65\3\2\2\2\64(\3\2\2\2\64*\3\2\2\2\64+\3\2\2\2\64,\3\2\2\2\64-\3\2"+
-		"\2\2\64.\3\2\2\2\64\60\3\2\2\2\65G\3\2\2\2\669\f\5\2\2\67:\5\6\4\28:\5"+
-		"\b\5\29\67\3\2\2\298\3\2\2\2:;\3\2\2\2;<\5\16\b\6<F\3\2\2\2=>\f\3\2\2"+
-		">?\7\r\2\2?F\5\16\b\4@A\f\4\2\2AB\7\b\2\2BC\5\22\n\2CD\7\t\2\2DF\3\2\2"+
-		"\2E\66\3\2\2\2E=\3\2\2\2E@\3\2\2\2FI\3\2\2\2GE\3\2\2\2GH\3\2\2\2H\17\3"+
-		"\2\2\2IG\3\2\2\2JK\7\25\2\2K\21\3\2\2\2LM\b\n\1\2MN\7\27\2\2N]\5\22\n"+
-		"\4O]\5\16\b\2PQ\5\16\b\2QR\7\16\2\2RS\5\16\b\2S]\3\2\2\2TU\5\16\b\2UV"+
-		"\7\17\2\2VW\5\16\b\2W]\3\2\2\2XY\7\6\2\2YZ\5\22\n\2Z[\7\7\2\2[]\3\2\2"+
-		"\2\\L\3\2\2\2\\O\3\2\2\2\\P\3\2\2\2\\T\3\2\2\2\\X\3\2\2\2]c\3\2\2\2^_"+
-		"\f\3\2\2_`\t\2\2\2`b\5\22\n\4a^\3\2\2\2be\3\2\2\2ca\3\2\2\2cd\3\2\2\2"+
-		"d\23\3\2\2\2ec\3\2\2\2\t\32\649EG\\c";
+		"\n\3\n\3\n\5\n]\n\n\3\n\3\n\3\n\3\n\3\n\3\n\7\ne\n\n\f\n\16\nh\13\n\3"+
+		"\n\2\4\16\22\13\2\4\6\b\n\f\16\20\22\2\2q\2\24\3\2\2\2\4\27\3\2\2\2\6"+
+		"\36\3\2\2\2\b \3\2\2\2\n\"\3\2\2\2\f&\3\2\2\2\16\64\3\2\2\2\20J\3\2\2"+
+		"\2\22\\\3\2\2\2\24\25\5\4\3\2\25\26\7\2\2\3\26\3\3\2\2\2\27\32\5\n\6\2"+
+		"\30\33\5\6\4\2\31\33\5\b\5\2\32\30\3\2\2\2\32\31\3\2\2\2\33\34\3\2\2\2"+
+		"\34\35\5\16\b\2\35\5\3\2\2\2\36\37\7\13\2\2\37\7\3\2\2\2 !\7\f\2\2!\t"+
+		"\3\2\2\2\"#\7\4\2\2#$\5\f\7\2$%\7\5\2\2%\13\3\2\2\2&\'\7\n\2\2\'\r\3\2"+
+		"\2\2()\b\b\1\2)\65\7\25\2\2*\65\7\22\2\2+\65\7\23\2\2,\65\7\24\2\2-\65"+
+		"\7\26\2\2./\7\3\2\2/\65\5\20\t\2\60\61\7\6\2\2\61\62\5\16\b\2\62\63\7"+
+		"\7\2\2\63\65\3\2\2\2\64(\3\2\2\2\64*\3\2\2\2\64+\3\2\2\2\64,\3\2\2\2\64"+
+		"-\3\2\2\2\64.\3\2\2\2\64\60\3\2\2\2\65G\3\2\2\2\669\f\5\2\2\67:\5\6\4"+
+		"\28:\5\b\5\29\67\3\2\2\298\3\2\2\2:;\3\2\2\2;<\5\16\b\6<F\3\2\2\2=>\f"+
+		"\3\2\2>?\7\r\2\2?F\5\16\b\4@A\f\4\2\2AB\7\b\2\2BC\5\22\n\2CD\7\t\2\2D"+
+		"F\3\2\2\2E\66\3\2\2\2E=\3\2\2\2E@\3\2\2\2FI\3\2\2\2GE\3\2\2\2GH\3\2\2"+
+		"\2H\17\3\2\2\2IG\3\2\2\2JK\7\25\2\2K\21\3\2\2\2LM\b\n\1\2MN\7\27\2\2N"+
+		"]\5\22\n\5O]\5\16\b\2PQ\5\16\b\2QR\7\16\2\2RS\5\16\b\2S]\3\2\2\2TU\5\16"+
+		"\b\2UV\7\17\2\2VW\5\16\b\2W]\3\2\2\2XY\7\6\2\2YZ\5\22\n\2Z[\7\7\2\2[]"+
+		"\3\2\2\2\\L\3\2\2\2\\O\3\2\2\2\\P\3\2\2\2\\T\3\2\2\2\\X\3\2\2\2]f\3\2"+
+		"\2\2^_\f\4\2\2_`\7\20\2\2`e\5\22\n\5ab\f\3\2\2bc\7\21\2\2ce\5\22\n\4d"+
+		"^\3\2\2\2da\3\2\2\2eh\3\2\2\2fd\3\2\2\2fg\3\2\2\2g\23\3\2\2\2hf\3\2\2"+
+		"\2\n\32\649EG\\df";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

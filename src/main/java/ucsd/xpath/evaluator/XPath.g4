@@ -67,7 +67,8 @@ pathFilter:
         | relativePath IDEq relativePath		#pathIdEq
         | '(' pathFilter ')'					#firstFunc
         | NOT pathFilter						#negatvePathFilter
-        | pathFilter (AND | OR) pathFilter		#conditionFilter
+        | pathFilter AND pathFilter				#andFilter
+        | pathFilter OR pathFilter				#orFilter
         ;
 
 /*

@@ -61,6 +61,19 @@ public interface XPathListener extends ParseTreeListener {
 	void exitPathIdEq(@NotNull XPathParser.PathIdEqContext ctx);
 
 	/**
+	 * Enter a parse tree produced by the {@code andFilter}
+	 * labeled alternative in {@link XPathParser#pathFilter}.
+	 * @param ctx the parse tree
+	 */
+	void enterAndFilter(@NotNull XPathParser.AndFilterContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code andFilter}
+	 * labeled alternative in {@link XPathParser#pathFilter}.
+	 * @param ctx the parse tree
+	 */
+	void exitAndFilter(@NotNull XPathParser.AndFilterContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link XPathParser#xquery}.
 	 * @param ctx the parse tree
 	 */
@@ -70,19 +83,6 @@ public interface XPathListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitXquery(@NotNull XPathParser.XqueryContext ctx);
-
-	/**
-	 * Enter a parse tree produced by the {@code conditionFilter}
-	 * labeled alternative in {@link XPathParser#pathFilter}.
-	 * @param ctx the parse tree
-	 */
-	void enterConditionFilter(@NotNull XPathParser.ConditionFilterContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code conditionFilter}
-	 * labeled alternative in {@link XPathParser#pathFilter}.
-	 * @param ctx the parse tree
-	 */
-	void exitConditionFilter(@NotNull XPathParser.ConditionFilterContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link XPathParser#descendant}.
@@ -120,6 +120,19 @@ public interface XPathListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTagName(@NotNull XPathParser.TagNameContext ctx);
+
+	/**
+	 * Enter a parse tree produced by the {@code orFilter}
+	 * labeled alternative in {@link XPathParser#pathFilter}.
+	 * @param ctx the parse tree
+	 */
+	void enterOrFilter(@NotNull XPathParser.OrFilterContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code orFilter}
+	 * labeled alternative in {@link XPathParser#pathFilter}.
+	 * @param ctx the parse tree
+	 */
+	void exitOrFilter(@NotNull XPathParser.OrFilterContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link XPathParser#descendantOrSelf}.
