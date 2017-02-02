@@ -21,11 +21,28 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 	private boolean isEqualList(List<Node> a, List<Node> b, boolean value){
 		if(a.size() != b.size())
 			return false;
-		for(int i = 0; i < a.size(); i++){
-			if(!(value && a.get(i).isEqualNode(b.get(i))) || !(!value && a.get(i).isSameNode(b.get(i))))
+		List<Node> tmp1 = new ArrayList<Node>(a);
+		List<Node> tmp2 = new ArrayList<Node>(b);
+		while(!tmp1.isEmpty()){
+			for(int i = 0; i < tmp2.size(); i++){
+				if((value && tmp2.get(i).isEqualNode(tmp1.get(0))) || (!value && tmp2.get(i).isSameNode(tmp1.get(0)))){
+					tmp2.remove(i);
+					break;
+				}
+			}
+			tmp1.remove(0);
+			if(tmp1.size() != tmp2.size())
 				return false;
 		}
 		return true;
+	}
+	
+	private boolean listContainsElement(List<Node> list, Node target){
+		for(Node node: list){
+			if(node.isSameNode(target))
+				return true;
+		}
+		return false;
 	}
 
 	/**
@@ -38,7 +55,7 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 		List<Node> tmp = new ArrayList<Node>();
 		for(int i = 0; i < result.size(); i++){
 			Node localNode = result.get(i).getParentNode();
-			if(localNode != null){
+			if(localNode != null && !listContainsElement(tmp, localNode)){
 				tmp.add(localNode);
 			}
 		}
@@ -117,7 +134,8 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 			Node tmp = result.get(startIdx);
 			NodeList children = tmp.getChildNodes();
 			for(int i = 0; i < children.getLength(); i++){
-				result.add(children.item(i));
+				if(!listContainsElement(result, children.item(i)))
+					result.add(children.item(i));
 			}
 		}
 		return null;
@@ -155,10 +173,14 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 		List<Node> tmp = new ArrayList<Node>(result);
 		visit(ctx.relativePath(1));
 		List<Node> r1 = new ArrayList<Node>(result);
-		result.clear();
-		result.addAll(tmp);
+		result = tmp;
 		visit(ctx.relativePath(0));
-		result.addAll(r1);
+		// Add nodes in r1, need to verify that the node does not exist in result before adding it to the list
+		for(Node node: r1){
+			if(!listContainsElement(result, node)){
+				result.add(node);
+			}
+		}
 		return null;
 	}
 	

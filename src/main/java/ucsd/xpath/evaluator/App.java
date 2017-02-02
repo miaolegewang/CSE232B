@@ -19,6 +19,9 @@ public class App
     	// Add test case here
     	testcases.add("doc(\"j_caesar.xml\")//(ACT,PERSONAE)//TITLE");
     	testcases.add("doc(\"j_caesar.xml\")//ACT[./TITLE]/*/SPEECH/../TITLE");
+    	testcases.add("doc(\"j_caesar.xml\")//ACT[./TITLE]/*/SPEECH/../*/.././TITLE");
+    	testcases.add("doc(\"j_caesar.xml\")//ACT[(./TITLE)==(./TITLE)]/*/SPEECH/../TITLE");
+    	testcases.add("doc(\"j_caesar.xml\")//ACT[not(./TITLE)==(./TITLE)]/*/SPEECH/../TITLE");
     	
     	XPathEval xquery = new XPathEval();
     	for(int i = 0; i < testcases.size(); i++){
