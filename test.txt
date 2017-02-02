@@ -1,0 +1,5 @@
+doc("j_caesar.xml")//(ACT,PERSONAE)/TITLE
+doc("j_caesar.xml")//ACT[./TITLE]/*/SPEECH/../TITLE
+doc("j_caesar.xml")//ACT[./TITLE]/*/SPEECH/../*/.././TITLE
+doc("j_caesar.xml")//ACT[(./TITLE)==(./TITLE)]/*/SPEECH/../TITLE
+doc("j_caesar.xml")//ACT[not(./TITLE)==(./TITLE)]/*/SPEECH/../TITLE
