@@ -1,19 +1,11 @@
 package ucsd.xpath.evaluator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Node;
 
 import ucsd.xpath.filereader.Readfile;
 import ucsd.xpath.xmlparser.DomParser;
-
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 
 
 /**
