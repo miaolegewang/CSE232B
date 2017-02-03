@@ -33,7 +33,6 @@ public class Readfile
         finally {
             try {
                 br.close();
-                return null;
             } catch (IOException e) {
                 System.out.println("Unable to close file: " + file.toString());
             }

@@ -16,7 +16,7 @@ public class App
 {
     public static void main( String[] args )
     {
-    	List<String> testcases = Readfile.read("test.txt");
+    	List<String> testcases = Readfile.read("test_1.txt");
     	XPathEval xquery = new XPathEval();
     	for(int i = 0; i < testcases.size(); i++){
     		List<Node> tmp = xquery.parse(testcases.get(i));

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<A attr2 = '4'>
+  <E>Sugar</E>
+  <B>
+    <C attr1 = '32' attr2 = '323' attr3 = '32'>
+      <D>
+        <E>
+          <Z>1</Z>
+          <Z>2</Z>
+          <Z>3</Z>
+        </E>
+        <B>
+          <C attr1 = 'yoyo'>
+            Show me good loving
+          </C>
+          <C attr2 = '4'>
+            Yes, please
+          </C>
+          <C attr1 = 'No' attr4 = 'mmm'>
+            Won't you come and put it down on me
+          </C>
+        </B>
+        <B attr1 = 'yoyo'>
+          <F>
+            <V attr7 = '1111'>Come on</V>
+          </F>
+        </B>
+      </D>
+    </C>
+  </B>
+  <F>
+    <V>Come on</V>
+  </F>
+</A>
