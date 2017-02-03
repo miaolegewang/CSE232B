@@ -60,13 +60,15 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 				tmp.add(localNode);
 			}
 		}
+		result = tmp;
+		/*
 		result.clear();
 		for(int i = 0; i < tmp.size(); i++){
 			Node localNode = tmp.get(i).getParentNode();
 			if(localNode != null && !listContainsElement(result, localNode)){
 				result.add(localNode);
 			}
-		}
+		}*/
 		
 		return null;
 	}
@@ -160,7 +162,7 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitSelf(@NotNull XPathParser.SelfContext ctx) { 
-		List<Node> tmp = new ArrayList<Node>();
+		/*List<Node> tmp = new ArrayList<Node>();
 		for(int i = 0; i < result.size(); i++){
 			Node parent = result.get(i).getParentNode();
 			if(parent != null && !listContainsElement(tmp, parent)){
@@ -168,7 +170,8 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 			}
 		}
 		result = tmp;
-		return null;
+		return null;*/
+		return visitChildren(ctx);
 	}
 
 
@@ -379,7 +382,12 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitDescendantPath(@NotNull XPathParser.DescendantPathContext ctx) {
-		//System.out.println(ctx.relativePath(1).toStringTree());
-		return visitChildren(ctx);
+		visit(ctx.relativePath(0));
+		String className = ctx.relativePath(1).getClass().getSimpleName();
+		if(!className.equals("ParentContext") && !className.equals("SelfContext")){
+			visit(ctx.getChild(1));
+		}
+		visit(ctx.relativePath(1));
+		return null;
 	}
 }
