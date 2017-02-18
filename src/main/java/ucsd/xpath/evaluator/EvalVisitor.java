@@ -366,6 +366,7 @@ public class EvalVisitor extends XPathBaseVisitor<List<Node>>{
 			result.add(nodes.get(i));
 			visit(ctx.relativePath(1));
 			if(!isEqualList(result, r1, true)){
+				System.out.println(nodes.get(i).getNodeName());
 				nodes.remove(i);
 				continue;
 			}

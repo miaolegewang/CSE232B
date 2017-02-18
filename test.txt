@@ -1,3 +1,5 @@
-doc("a.xml")//A/B/C
 doc("a.xml")//A/B/C/..
 doc("a.xml")//A/B/C/../*/..
+doc("a.xml")//A/.//B/./F
+doc("a.xml")//A/./F
+doc("a.xml")//A[.//B/F=./F]

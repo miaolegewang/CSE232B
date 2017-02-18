@@ -66,9 +66,9 @@ pathFilter:
         | relativePath ValueEq relativePath		#pathValueEq
         | relativePath IDEq relativePath		#pathIdEq
         | '(' pathFilter ')'					#firstFunc
-        | NOT pathFilter						#negatvePathFilter
-        | pathFilter AND pathFilter				#andFilter
         | pathFilter OR pathFilter				#orFilter
+        | pathFilter AND pathFilter				#andFilter
+        | NOT pathFilter						#negatvePathFilter
         ;
 
 /*
@@ -77,17 +77,17 @@ pathFilter:
  * =====================
  */
 
+NOT: 'not';
+AND: 'and';
+OR: 'or';
+TEXTFUNCTION: 'text()';
 FNAME: [a-zA-Z0-9_'.''/']+ '.xml';
 SLASH: '/';
 DSLASH: '//';
 CONCAT: ',';
 ValueEq: '=' | 'eq';
 IDEq: '==' | 'is';
-AND: 'and';
-OR: 'or';
 ASTERISK: '*';
 DOT: '.';
 UPPER: '..';
 NAME: [a-zA-Z0-9]+;
-TEXTFUNCTION: 'text()';
-NOT: 'not';

@@ -17,13 +17,13 @@ public class XPathParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__6=1, T__5=2, T__4=3, T__3=4, T__2=5, T__1=6, T__0=7, FNAME=8, SLASH=9, 
-		DSLASH=10, CONCAT=11, ValueEq=12, IDEq=13, AND=14, OR=15, ASTERISK=16, 
-		DOT=17, UPPER=18, NAME=19, TEXTFUNCTION=20, NOT=21;
+		T__6=1, T__5=2, T__4=3, T__3=4, T__2=5, T__1=6, T__0=7, NOT=8, AND=9, 
+		OR=10, TEXTFUNCTION=11, FNAME=12, SLASH=13, DSLASH=14, CONCAT=15, ValueEq=16, 
+		IDEq=17, ASTERISK=18, DOT=19, UPPER=20, NAME=21;
 	public static final String[] tokenNames = {
-		"<INVALID>", "'@'", "'doc(\"'", "'\")'", "'('", "')'", "'['", "']'", "FNAME", 
-		"'/'", "'//'", "','", "ValueEq", "IDEq", "'and'", "'or'", "'*'", "'.'", 
-		"'..'", "NAME", "'text()'", "'not'"
+		"<INVALID>", "'@'", "'doc(\"'", "'\")'", "'('", "')'", "'['", "']'", "'not'", 
+		"'and'", "'or'", "'text()'", "FNAME", "'/'", "'//'", "','", "ValueEq", 
+		"IDEq", "'*'", "'.'", "'..'", "NAME"
 	};
 	public static final int
 		RULE_xquery = 0, RULE_xpath = 1, RULE_descendant = 2, RULE_descendantOrSelf = 3, 
@@ -926,7 +926,7 @@ public class XPathParser extends Parser {
 				_prevctx = _localctx;
 
 				setState(75); match(NOT);
-				setState(76); pathFilter(3);
+				setState(76); pathFilter(1);
 				}
 				break;
 
@@ -985,23 +985,23 @@ public class XPathParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
 					case 1:
 						{
-						_localctx = new AndFilterContext(new PathFilterContext(_parentctx, _parentState));
+						_localctx = new OrFilterContext(new PathFilterContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_pathFilter);
 						setState(92);
-						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(93); match(AND);
-						setState(94); pathFilter(3);
+						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
+						setState(93); match(OR);
+						setState(94); pathFilter(4);
 						}
 						break;
 
 					case 2:
 						{
-						_localctx = new OrFilterContext(new PathFilterContext(_parentctx, _parentState));
+						_localctx = new AndFilterContext(new PathFilterContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_pathFilter);
 						setState(95);
-						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(96); match(OR);
-						setState(97); pathFilter(2);
+						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
+						setState(96); match(AND);
+						setState(97); pathFilter(3);
 						}
 						break;
 					}
@@ -1034,9 +1034,9 @@ public class XPathParser extends Parser {
 	}
 	private boolean pathFilter_sempred(PathFilterContext _localctx, int predIndex) {
 		switch (predIndex) {
-		case 3: return precpred(_ctx, 2);
+		case 3: return precpred(_ctx, 3);
 
-		case 4: return precpred(_ctx, 1);
+		case 4: return precpred(_ctx, 2);
 		}
 		return true;
 	}
@@ -1063,21 +1063,21 @@ public class XPathParser extends Parser {
 		"\36\3\2\2\2\b \3\2\2\2\n\"\3\2\2\2\f&\3\2\2\2\16\64\3\2\2\2\20J\3\2\2"+
 		"\2\22\\\3\2\2\2\24\25\5\4\3\2\25\26\7\2\2\3\26\3\3\2\2\2\27\32\5\n\6\2"+
 		"\30\33\5\6\4\2\31\33\5\b\5\2\32\30\3\2\2\2\32\31\3\2\2\2\33\34\3\2\2\2"+
-		"\34\35\5\16\b\2\35\5\3\2\2\2\36\37\7\13\2\2\37\7\3\2\2\2 !\7\f\2\2!\t"+
-		"\3\2\2\2\"#\7\4\2\2#$\5\f\7\2$%\7\5\2\2%\13\3\2\2\2&\'\7\n\2\2\'\r\3\2"+
-		"\2\2()\b\b\1\2)\65\7\25\2\2*\65\7\22\2\2+\65\7\23\2\2,\65\7\24\2\2-\65"+
-		"\7\26\2\2./\7\3\2\2/\65\5\20\t\2\60\61\7\6\2\2\61\62\5\16\b\2\62\63\7"+
-		"\7\2\2\63\65\3\2\2\2\64(\3\2\2\2\64*\3\2\2\2\64+\3\2\2\2\64,\3\2\2\2\64"+
-		"-\3\2\2\2\64.\3\2\2\2\64\60\3\2\2\2\65G\3\2\2\2\669\f\5\2\2\67:\5\6\4"+
-		"\28:\5\b\5\29\67\3\2\2\298\3\2\2\2:;\3\2\2\2;<\5\16\b\6<F\3\2\2\2=>\f"+
-		"\3\2\2>?\7\r\2\2?F\5\16\b\4@A\f\4\2\2AB\7\b\2\2BC\5\22\n\2CD\7\t\2\2D"+
-		"F\3\2\2\2E\66\3\2\2\2E=\3\2\2\2E@\3\2\2\2FI\3\2\2\2GE\3\2\2\2GH\3\2\2"+
-		"\2H\17\3\2\2\2IG\3\2\2\2JK\7\25\2\2K\21\3\2\2\2LM\b\n\1\2MN\7\27\2\2N"+
-		"]\5\22\n\5O]\5\16\b\2PQ\5\16\b\2QR\7\16\2\2RS\5\16\b\2S]\3\2\2\2TU\5\16"+
-		"\b\2UV\7\17\2\2VW\5\16\b\2W]\3\2\2\2XY\7\6\2\2YZ\5\22\n\2Z[\7\7\2\2[]"+
-		"\3\2\2\2\\L\3\2\2\2\\O\3\2\2\2\\P\3\2\2\2\\T\3\2\2\2\\X\3\2\2\2]f\3\2"+
-		"\2\2^_\f\4\2\2_`\7\20\2\2`e\5\22\n\5ab\f\3\2\2bc\7\21\2\2ce\5\22\n\4d"+
-		"^\3\2\2\2da\3\2\2\2eh\3\2\2\2fd\3\2\2\2fg\3\2\2\2g\23\3\2\2\2hf\3\2\2"+
+		"\34\35\5\16\b\2\35\5\3\2\2\2\36\37\7\17\2\2\37\7\3\2\2\2 !\7\20\2\2!\t"+
+		"\3\2\2\2\"#\7\4\2\2#$\5\f\7\2$%\7\5\2\2%\13\3\2\2\2&\'\7\16\2\2\'\r\3"+
+		"\2\2\2()\b\b\1\2)\65\7\27\2\2*\65\7\24\2\2+\65\7\25\2\2,\65\7\26\2\2-"+
+		"\65\7\r\2\2./\7\3\2\2/\65\5\20\t\2\60\61\7\6\2\2\61\62\5\16\b\2\62\63"+
+		"\7\7\2\2\63\65\3\2\2\2\64(\3\2\2\2\64*\3\2\2\2\64+\3\2\2\2\64,\3\2\2\2"+
+		"\64-\3\2\2\2\64.\3\2\2\2\64\60\3\2\2\2\65G\3\2\2\2\669\f\5\2\2\67:\5\6"+
+		"\4\28:\5\b\5\29\67\3\2\2\298\3\2\2\2:;\3\2\2\2;<\5\16\b\6<F\3\2\2\2=>"+
+		"\f\3\2\2>?\7\21\2\2?F\5\16\b\4@A\f\4\2\2AB\7\b\2\2BC\5\22\n\2CD\7\t\2"+
+		"\2DF\3\2\2\2E\66\3\2\2\2E=\3\2\2\2E@\3\2\2\2FI\3\2\2\2GE\3\2\2\2GH\3\2"+
+		"\2\2H\17\3\2\2\2IG\3\2\2\2JK\7\27\2\2K\21\3\2\2\2LM\b\n\1\2MN\7\n\2\2"+
+		"N]\5\22\n\3O]\5\16\b\2PQ\5\16\b\2QR\7\22\2\2RS\5\16\b\2S]\3\2\2\2TU\5"+
+		"\16\b\2UV\7\23\2\2VW\5\16\b\2W]\3\2\2\2XY\7\6\2\2YZ\5\22\n\2Z[\7\7\2\2"+
+		"[]\3\2\2\2\\L\3\2\2\2\\O\3\2\2\2\\P\3\2\2\2\\T\3\2\2\2\\X\3\2\2\2]f\3"+
+		"\2\2\2^_\f\5\2\2_`\7\f\2\2`e\5\22\n\6ab\f\4\2\2bc\7\13\2\2ce\5\22\n\5"+
+		"d^\3\2\2\2da\3\2\2\2eh\3\2\2\2fd\3\2\2\2fg\3\2\2\2g\23\3\2\2\2hf\3\2\2"+
 		"\2\n\32\649EG\\df";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
