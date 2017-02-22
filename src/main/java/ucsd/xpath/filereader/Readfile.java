@@ -17,12 +17,26 @@ public class Readfile
             java.io.FileReader fr = new java.io.FileReader(file);
             br = new BufferedReader(fr);
             String line;
+            String hashtag = "###";
+            String buffer = "";
+            int counter = 0;
             
             System.out.println("file list:");
             
             while( (line = br.readLine()) != null ) {
-                System.out.println(line);
-            	testcases.add(line);
+            	if(line.length() == 3 && hashtag.equals(line)) {
+//            		System.out.println(buffer);
+            		testcases.add(buffer);
+            		buffer = "";
+                	counter++;
+            	}else{
+            		buffer += (line + '\n');            		
+            	}
+            }
+            
+            if(buffer.length() != 0){
+//            	System.out.println(buffer);
+        		testcases.add(buffer);
             }
 
         } catch (FileNotFoundException e) {
