@@ -17,7 +17,6 @@ public class XPathEval {
         
         ParseTree tree = parser.xquery();
         EvalVisitor evalVisitor = new EvalVisitor();
-        evalVisitor.visit(tree);
-        return evalVisitor.getResult();
+        return null;
 	}
 }

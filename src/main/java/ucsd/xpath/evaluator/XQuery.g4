@@ -88,8 +88,8 @@ bind: var IN query;
  * ====================
  */
 
- sl: SLASH;
- dsl: DSLASH;
+sl: SLASH;
+dsl: DSLASH;
 
 relativePath:
           NAME  		#tagName
