@@ -24,21 +24,18 @@ public class App
     		System.out.println(str);
     	}
 
-//    	List<Integer> a = new ArrayList<Integer>();
-//    	a.add(4);
-//    	List<Integer> b = new ArrayList<Integer>();
-//    	b.add(5);
-//    	a.addAll(b);
-//    	System.out.println(a.size());
-//    	XPathEval xquery = new XPathEval();
+
     	XQueryEval xquery = new XQueryEval();
     	for(int i = 0; i < testcases.size(); i++){
-    		System.out.println("Starrt");
+    		System.out.println("Start");
     		System.out.println(i);
     		
     		List<Node> tmp = xquery.parse(testcases.get(i));
-    		DomParser.WriteXMLFile(tmp, "testcase_" + Integer.toString(i + 1) + ".xml");
+    		if(tmp != null)
+    			DomParser.WriteXMLFile(tmp, "testcase_" + Integer.toString(i + 1) + ".xml");
+    		else System.out.println("Jiu Ming aaaaaaaaaaaaaaaaa");
     		System.out.println("Finish");
     	}
     }
+   
 }

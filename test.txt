@@ -1,1 +1,2 @@
-for $a in doc("j_caesar.xml")//ACT return $a
+for $a in doc("a.xml")//F 
+return <hahha>$a</hahaha>

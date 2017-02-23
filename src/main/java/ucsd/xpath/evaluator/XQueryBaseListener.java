@@ -472,6 +472,19 @@ public class XQueryBaseListener implements XQueryListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterXpath(@NotNull XQueryParser.XpathContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitXpath(@NotNull XQueryParser.XpathContext ctx) { }
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAbsolutePath(@NotNull XQueryParser.AbsolutePathContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -438,6 +438,17 @@ public interface XQueryListener extends ParseTreeListener {
 	void exitSomeClause(@NotNull XQueryParser.SomeClauseContext ctx);
 
 	/**
+	 * Enter a parse tree produced by {@link XQueryParser#xpath}.
+	 * @param ctx the parse tree
+	 */
+	void enterXpath(@NotNull XQueryParser.XpathContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link XQueryParser#xpath}.
+	 * @param ctx the parse tree
+	 */
+	void exitXpath(@NotNull XQueryParser.XpathContext ctx);
+
+	/**
 	 * Enter a parse tree produced by the {@code absolutePath}
 	 * labeled alternative in {@link XQueryParser#query}.
 	 * @param ctx the parse tree

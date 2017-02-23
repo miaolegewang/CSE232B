@@ -10,7 +10,7 @@ xquery:	query EOF;
 
 query:
       var                                                       #variable
-    | ap                                                        #absolutePath
+    | xpath						                                #absolutePath
     | stringConst                                               #string
     | '(' query ')'                                             #priority
     | query ',' query                                           #pairQuery
@@ -91,6 +91,8 @@ bind: var IN query;
 
 sl: SLASH;
 dsl: DSLASH;
+
+xpath: ap (sl | dsl) relativePath;
 
 relativePath:
           NAME  		#tagName

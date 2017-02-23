@@ -5,8 +5,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -20,48 +26,45 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	
 	List<Node> r;
 	
+	Document doc;
+	
+	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitXquery(@NotNull XQueryParser.XqueryContext ctx) {
+		try{
+	    	DocumentBuilder builder = factory.newDocumentBuilder();
+	    	doc = builder.newDocument();
+	    } catch (ParserConfigurationException parserException) {
+	        parserException.printStackTrace();
+	    }
+		List<Node> test = visit(ctx.query());
+		if(test != null)
+			System.out.println("Success");
+		else System.out.println("Fail");
+		return test;
+	}
+		
 	
 	/*
 	 * ============================
 	 * Internal use function
 	 * ============================
 	 */
-	
-//	private void iterateFLWR(XQueryParser.FlwrContext ctx, int level, List<Node> results){
-//		if(level == ctx.forClause().bindings().bind().size()){
-//			// All variables has been traversed
-//			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
-//			visit(ctx.letClause());
+	private void iterateFLWR(XQueryParser.FlwrContext ctx, int level, List<Node> results){
+		if(level == ctx.forClause().bindings().bind().size()){
+			// All variables has been traversed
+			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
 //			if(ctx.whereClause().isEmpty() || visit(ctx.whereClause()).isEmpty()){ // Question: the first one shoudln't be with !? and should be OR?
 //				// where condition fails, do not add new content
 //				return;
 //			}
-//			Node newNode = visit(ctx.returnClause()).get(0);
-//			results.add(newNode);
-//			variables = backup;
-//		} else {
-//			String varName = ctx.forClause().bindings().bind(level).var().varName().getText();
-//			for(Node n: visit(ctx.forClause().bindings().bind(level).query())){
-//				variables.put(varName, new ArrayList<>(Arrays.asList(n)));
-//				iterateFLWR(ctx, level + 1, results);
-//			}
-//		}
-//	}
-
-	private void iterateFLWR(XQueryParser.FlwrContext ctx, int level, List<Node> results){
-		if(level == 0){
-			System.out.println(ctx.forClause().bindings().bind(level).var().varName().getText());
-		}
-		if(level == ctx.forClause().bindings().bind().size()){
-			// All variables has been traversed
-			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
-			visit(ctx.letClause());
-			if(ctx.whereClause().isEmpty() || visit(ctx.whereClause()).isEmpty()){ // Question: the first one shoudln't be with !? and should be OR?
-				// where condition fails, do not add new content
-				return;
-			}
-			Node newNode = visit(ctx.returnClause()).get(0);
-			results.add(newNode);
+			results.addAll(visit(ctx.returnClause()));
 			variables = backup;
 		} else {
 			String varName = ctx.forClause().bindings().bind(level).var().varName().getText();
@@ -109,17 +112,15 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	@Override public List<Node> visitFlwr(@NotNull XQueryParser.FlwrContext ctx) {
 		HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
 		List<Node> localResult = new ArrayList<Node>();
-		
-		System.out.println("^^^^^^^^^^^^^^^^^^^^");
-		
+				
 		iterateFLWR(ctx, 0, localResult);
-		variables = backup;
 		
 		for(Node node: localResult){
 			System.out.println("####");
 			System.out.println(node.getNodeName().toString());
 		}
 		
+		variables = backup;
 		return localResult;
 	}
 	
@@ -174,6 +175,22 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	@Override public List<Node> visitReturnClause(@NotNull XQueryParser.ReturnClauseContext ctx) {
 		return visit(ctx.query());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitFormat(@NotNull XQueryParser.FormatContext ctx) {
+		String tagname = ctx.tag(0).getText();
+	    Node n = doc.createElement(tagname);
+	    List<Node> tmp = visit(ctx.query());
+	    for(Node local: tmp){
+	    	n.appendChild(doc.importNode(local, true));
+	    }
+	    return new ArrayList<Node>(Arrays.asList(n));
+	}
 		
 	/**
 	 * {@inheritDoc}
@@ -203,13 +220,30 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public List<Node> visitAbsolutePath(@NotNull XQueryParser.AbsolutePathContext ctx) {		
+	@Override public List<Node> visitAp(@NotNull XQueryParser.ApContext ctx) {
 		List<Node> result = new ArrayList<Node>();
-		String fname = ctx.ap().FILENAME().getText();
+		String fname = ctx.FILENAME().getText();
 		result.add((Node)DomParser.parse(fname.substring(1, fname.length() - 1)));
 		return result;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitXpath(@NotNull XQueryParser.XpathContext ctx) {
+		r = visit(ctx.ap());
+		Document root = (Document)r.get(0);
+		r.remove(0);
+		r.add(root.getDocumentElement());
+		if(!ctx.dsl().isEmpty()){
+			visit(ctx.dsl());
+		}
+		visit(ctx.relativePath());
+		return r;
+	}
 	/**
 	 * {@inheritDoc}
 	 *
@@ -274,8 +308,10 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	/*
+	
 	@Override public List<Node> visitDsl(@NotNull XQueryParser.DslContext ctx) {
+		System.out.println(r.size());
+		
 		for(int startIdx = 0; startIdx < r.size(); startIdx++){
 			Node tmp = r.get(startIdx);
 			NodeList children = tmp.getChildNodes();
@@ -284,9 +320,13 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 					r.add(children.item(i));
 			}
 		}
+		
+		System.out.println("Size of children");
+		System.out.println(r.size());
+		
 		return null;
 	}
-	*/
+	
 	/**
 	 * {@inheritDoc}
 	 *
@@ -314,8 +354,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitTagName(@NotNull XQueryParser.TagNameContext ctx) { 
-		
-		
 		for(int i = 0; i < r.size();){
 			if(r.get(i).getNodeType() != Node.ELEMENT_NODE || !r.get(i).getNodeName().equals(ctx.getText()) ){
 				r.remove(i);
@@ -494,7 +532,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			r.add(nodes.get(i));
 			visit(ctx.relativePath(1));
 			if(!isEqualList(r, r1, true)){
-				System.out.println(nodes.get(i).getNodeName());
 				nodes.remove(i);
 				continue;
 			}

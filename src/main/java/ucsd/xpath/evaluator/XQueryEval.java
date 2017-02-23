@@ -17,7 +17,6 @@ public class XQueryEval {
                 
         ParseTree tree = parser.xquery();
         EvalVisitor evalVisitor = new EvalVisitor();
-                
         return evalVisitor.visit(tree);
 	}
 

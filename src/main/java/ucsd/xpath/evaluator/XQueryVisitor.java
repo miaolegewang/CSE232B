@@ -279,6 +279,13 @@ public interface XQueryVisitor<T> extends ParseTreeVisitor<T> {
 	T visitSomeClause(@NotNull XQueryParser.SomeClauseContext ctx);
 
 	/**
+	 * Visit a parse tree produced by {@link XQueryParser#xpath}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitXpath(@NotNull XQueryParser.XpathContext ctx);
+
+	/**
 	 * Visit a parse tree produced by the {@code absolutePath}
 	 * labeled alternative in {@link XQueryParser#query}.
 	 * @param ctx the parse tree
