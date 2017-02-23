@@ -1,2 +1,5 @@
-for $a in doc("a.xml")//F 
-return <hahha>$a</hahaha>
+for $a in doc("book.xml")//Book,
+	$at in $a/Author,
+	$bt in $a/Author
+where $at/Name/LastName/text() = $bt/Name/LastName/text() and not($at = $bt)
+return <Book>{$a/TITLE/text()}</Book>
