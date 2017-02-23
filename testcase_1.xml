@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><Result><Authors><Author><lastname>Doubi</lastname><firstname>Peter</firstname></Author><Author><lastname>Zha</lastname><firstname>Dan</firstname></Author><Author><lastname>Yamiedie</lastname><firstname>Dan</firstname></Author><Author><lastname>Zha</lastname><firstname>Jidan</firstname></Author></Authors><Authors><Author><lastname>Bronte</lastname><firstname>Emily</firstname></Author><Author><lastname>Zha</lastname><firstname>Dan</firstname></Author></Authors></Result>
-=======
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><Result><Book>Jane Eyre</Book></Result>
->>>>>>> 7fcd7e96edeb512a0dd5197570f5402b691eda3c
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Result><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Jane Eyre</Book><Book>Wuthering Heights</Book><Book>Wuthering Heights</Book></Result>

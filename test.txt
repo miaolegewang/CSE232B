@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 for $a in doc("book.xml")//Book
 			let $at := $a/Author
 return 
@@ -16,10 +15,9 @@ return
 				}</Author>
 		}
 		</Authors>
-=======
+###
 for $a in doc("book.xml")//Book,
 	$at in $a/Author,
 	$bt in $a/Author
 where $at/Name/LastName/text() = $bt/Name/LastName/text() and not($at = $bt)
 return <Book>{$a/TITLE/text()}</Book>
->>>>>>> 7fcd7e96edeb512a0dd5197570f5402b691eda3c

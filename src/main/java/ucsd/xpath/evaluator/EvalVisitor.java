@@ -59,7 +59,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * ============================
 	 */
 	private void iterateFLWR(XQueryParser.FlwrContext ctx, int level, List<Node> results){
-		System.out.println("Level:" + Integer.toString(level));
 		if(level == ctx.forClause().bindings().bind().size()){
 			// All variables has been traversed
 			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
@@ -69,7 +68,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			
 			if(ctx.whereClause() != null && visit(ctx.whereClause()).size() == 0){ // Question: the first one shoudln't be with !? and should be OR?
 				// where condition fails, do not add new content
-				System.out.println("Inside empty");
 				return;
 			}
 			
@@ -396,11 +394,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 				
 		iterateFLWR(ctx, 0, localResult);
 		
-		for(Node node: localResult){
-			System.out.println("####");
-			System.out.println(node.getNodeName().toString());
-		}
-		
 		variables = backup;
 		return localResult;
 	}
@@ -464,7 +457,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitChild(@NotNull XQueryParser.ChildContext ctx) {
-		System.out.println(ctx.getText());
 		r.clear();
 		r.addAll(visit(ctx.query()));
 		String fullString = ctx.relativePath().getText();
