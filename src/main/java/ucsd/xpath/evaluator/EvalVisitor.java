@@ -60,10 +60,12 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		if(level == ctx.forClause().bindings().bind().size()){
 			// All variables has been traversed
 			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
+			
 //			if(ctx.whereClause().isEmpty() || visit(ctx.whereClause()).isEmpty()){ // Question: the first one shoudln't be with !? and should be OR?
 //				// where condition fails, do not add new content
 //				return;
 //			}
+			
 			results.addAll(visit(ctx.returnClause()));
 			variables = backup;
 		} else {
@@ -155,6 +157,12 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	}
 
 	
+	/*
+	 * =======================================
+	 * Cond Implementation
+	 * =======================================
+	 */	
+
 	/**
 	 * {@inheritDoc}
 	 *
@@ -165,6 +173,167 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		return visit(ctx.cond());
 	}
 	
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitQueryValueEq(@NotNull XQueryParser.QueryValueEqContext ctx) { 
+		List<Node> q1 = visit(ctx.query(0));
+		List<Node> q2 = visit(ctx.query(1));
+		List<Integer> checkq1 = new ArrayList<Integer>();
+		List<Integer> checkq2 = new ArrayList<Integer>();
+		
+		if(q1.size() != q2.size())	return null;
+		
+		for(int i = 0; i < q1.size(); i++){
+			for(int j = 0; j < q2.size(); j++){
+				if(q1.get(i).isEqualNode(q2.get(j)) && !checkq1.contains(new Integer(i)) && !checkq2.contains(new Integer(j)) ){
+					checkq1.add(i);
+					checkq2.add(j);
+				}
+			}
+		}
+		
+		return checkq1.size() == q1.size() ? q1: null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitQueryIDEq(@NotNull XQueryParser.QueryIDEqContext ctx) {
+		List<Node> q1 = visit(ctx.query(0));
+		List<Node> q2 = visit(ctx.query(1));
+		List<Integer> checkq1 = new ArrayList<Integer>();
+		List<Integer> checkq2 = new ArrayList<Integer>();
+		
+		if(q1.size() != q2.size())	return null;
+		
+		for(int i = 0; i < q1.size(); i++){
+			for(int j = 0; j < q2.size(); j++){
+				if(q1.get(i).isSameNode(q2.get(j)) && !checkq1.contains(new Integer(i)) && !checkq2.contains(new Integer(j)) ){
+					checkq1.add(i);
+					checkq2.add(j);
+				}
+			}
+		}
+		
+		return checkq1.size() == q1.size() ? q1: null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitEmptyQuery(@NotNull XQueryParser.EmptyQueryContext ctx) { 
+		List<Node> q = visit(ctx.query());
+		return q.isEmpty() ? null: q;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitSomeClause(@NotNull XQueryParser.SomeClauseContext ctx) {
+		List<BindContext> binds = ctx.bindings().bind();
+		HashMap<String, List<Node>> backup = variables;
+		
+		List<Node> conditions = visit(ctx.cond());
+		List<Node> result = new ArrayList<Node>();
+		
+		for(BindContext b: binds){
+			String var = b.var().varName().getText().toString();
+			List<Node> c;
+			if(variables.containsKey(var)){
+				c = variables.get(var);
+			}else{
+				c = visit(b.query());
+				variables.put(var, c);
+			}
+			
+			List<Node> q = visit(b.query());
+			Boolean flag = true;
+			for(Node n: q){
+				if(!c.contains(n)){
+					flag = false;
+					break;
+				}
+			}
+
+		}
+		
+		
+		variables = backup;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitAndCond(@NotNull XQueryParser.AndCondContext ctx) {
+		List<Node> c1 = visit(ctx.cond(0));
+		List<Node> c2 = visit(ctx.cond(1));
+		List<Node> result = new ArrayList<Node>();
+		
+		for(Node n1: c1){
+			for(Node n2: c2){
+				if(n1.isEqualNode(n2) && !result.contains(n1)){
+					result.add(n1);
+				}
+			}
+		}
+		return result;	
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitOrCond(@NotNull XQueryParser.OrCondContext ctx) { 
+		List<Node> c1 = visit(ctx.cond(0));
+		List<Node> c2 = visit(ctx.cond(1));
+		List<Node> result = new ArrayList<Node>();
+		
+		for(Node n1: c1){
+			if(!result.contains(n1)){
+				result.add(n1);
+			}
+		}
+		for(Node n2: c2){
+			if(!result.contains(n2)){
+				result.add(n2);
+			}
+		}
+		return result;
+	}
+
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitNotCond(@NotNull XQueryParser.NotCondContext ctx) { 
+		return visit(ctx.cond());
+	}
+
+
+	
+
 	
 	/**
 	 * {@inheritDoc}
