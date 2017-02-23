@@ -225,6 +225,14 @@ public interface XQueryVisitor<T> extends ParseTreeVisitor<T> {
 	T visitDescendantExistence(@NotNull XQueryParser.DescendantExistenceContext ctx);
 
 	/**
+	 * Visit a parse tree produced by the {@code child}
+	 * labeled alternative in {@link XQueryParser#query}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitChild(@NotNull XQueryParser.ChildContext ctx);
+
+	/**
 	 * Visit a parse tree produced by {@link XQueryParser#stringConst}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

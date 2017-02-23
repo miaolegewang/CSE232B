@@ -14,7 +14,8 @@ query:
     | stringConst                                               #string
     | '(' query ')'                                             #priority
     | query ',' query                                           #pairQuery
-    | query (sl | dsl) relativePath                             #descendant
+    | query sl relativePath										#child
+    | query dsl relativePath                             		#descendant
     | '<' tag '>' '{' query '}' '</' tag '>'                    #format
     | forClause (letClause)? (whereClause)? returnClause        #flwr
     | letClause query                                           #let
@@ -23,7 +24,7 @@ query:
 ap: ('doc(' | 'document(') FILENAME ')';
 stringConst: STR;
 
-var: '$' varName;
+var: '$' varName ;
 varName: NAME;
 tag: NAME;
 

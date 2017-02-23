@@ -351,6 +351,19 @@ public interface XQueryListener extends ParseTreeListener {
 	void exitDescendantExistence(@NotNull XQueryParser.DescendantExistenceContext ctx);
 
 	/**
+	 * Enter a parse tree produced by the {@code child}
+	 * labeled alternative in {@link XQueryParser#query}.
+	 * @param ctx the parse tree
+	 */
+	void enterChild(@NotNull XQueryParser.ChildContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code child}
+	 * labeled alternative in {@link XQueryParser#query}.
+	 * @param ctx the parse tree
+	 */
+	void exitChild(@NotNull XQueryParser.ChildContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link XQueryParser#stringConst}.
 	 * @param ctx the parse tree
 	 */

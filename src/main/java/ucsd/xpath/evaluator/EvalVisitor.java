@@ -49,6 +49,9 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 //	}
 
 	private void iterateFLWR(XQueryParser.FlwrContext ctx, int level, List<Node> results){
+		if(level == 0){
+			System.out.println(ctx.forClause().bindings().bind(level).var().varName().getText());
+		}
 		if(level == ctx.forClause().bindings().bind().size()){
 			// All variables has been traversed
 			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
@@ -106,6 +109,9 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	@Override public List<Node> visitFlwr(@NotNull XQueryParser.FlwrContext ctx) {
 		HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
 		List<Node> localResult = new ArrayList<Node>();
+		
+		System.out.println("^^^^^^^^^^^^^^^^^^^^");
+		
 		iterateFLWR(ctx, 0, localResult);
 		variables = backup;
 		
@@ -197,19 +203,10 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public List<Node> visitAbsolutePath(@NotNull XQueryParser.AbsolutePathContext ctx) {
-		StringBuilder fname = new StringBuilder();
-		String fullString = ctx.getText();
-		Boolean start = false;
-		for(int i = 0; i < fullString.length(); i++){
-			if(!start){
-				start = (fullString.charAt(i) == '"') ^ start;
-			} else {
-				fname.append(fullString).charAt(i);
-			}
-		}
+	@Override public List<Node> visitAbsolutePath(@NotNull XQueryParser.AbsolutePathContext ctx) {		
 		List<Node> result = new ArrayList<Node>();
-		result.add((Node)DomParser.parse(fname.toString()));
+		String fname = ctx.ap().FILENAME().getText();
+		result.add((Node)DomParser.parse(fname.substring(1, fname.length() - 1)));
 		return result;
 	}
 	
@@ -219,20 +216,31 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public List<Node> visitDescendant(@NotNull XQueryParser.DescendantContext ctx) {
+	@Override public List<Node> visitChild(@NotNull XQueryParser.ChildContext ctx) {
 		r = visit(ctx.query());
 		String fullString = ctx.relativePath().getText();
-		if(ctx.getChild(1).getText().equals("/")){
-			if(!(fullString.length() >= 1 && fullString.charAt(0) == '.')){
-				// Want to check if the first two characters are ".." or '.'. If yes, then do not need to update array r by its descendants 
-				visit(ctx.getChild(1));
-			}
-		} else visit(ctx.getChild(1));
+		if(!(fullString.length() >= 1 && fullString.charAt(0) == '.')){
+			// Want to check if the first two characters are ".." or '.'. If yes, then do not need to update array r by its descendants 
+			visit(ctx.getChild(1));
+		}
 		visit(ctx.relativePath());
 		return r;
 	}
 	
-	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	/*
+	@Override public List<Node> visitDescendant(@NotNull XQueryParser.DescendantContext ctx) {
+		r = visit(ctx.query());
+		visit(ctx.dsl());
+		visit(ctx.relativePath());
+		return r;
+	}
+	*/
 	/*
 	 * =======================================
 	 * XPATH : RelativePath implementation
@@ -245,6 +253,8 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	
+	/*
 	@Override public List<Node> visitSl(@NotNull XQueryParser.SlContext ctx) {
 		List<Node> tmp = new ArrayList<Node>(r);
 		r.clear();
@@ -256,6 +266,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		}
 		return null;
 	}
+	*/
 	
 	/**
 	 * {@inheritDoc}
@@ -263,6 +274,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	/*
 	@Override public List<Node> visitDsl(@NotNull XQueryParser.DslContext ctx) {
 		for(int startIdx = 0; startIdx < r.size(); startIdx++){
 			Node tmp = r.get(startIdx);
@@ -274,7 +286,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		}
 		return null;
 	}
-	
+	*/
 	/**
 	 * {@inheritDoc}
 	 *

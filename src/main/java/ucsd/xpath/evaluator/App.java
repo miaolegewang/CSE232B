@@ -35,6 +35,7 @@ public class App
     	for(int i = 0; i < testcases.size(); i++){
     		System.out.println("Starrt");
     		System.out.println(i);
+    		
     		List<Node> tmp = xquery.parse(testcases.get(i));
     		DomParser.WriteXMLFile(tmp, "testcase_" + Integer.toString(i + 1) + ".xml");
     		System.out.println("Finish");
