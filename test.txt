@@ -1,2 +1,17 @@
-for $a in doc("a.xml")//F 
-return <hahha>$a</hahaha>
+for $a in doc("book.xml")//Book
+			let $at := $a/Author
+return 
+		<Authors>{
+			for $author in $at
+				return <Author>{
+				<lastname>
+					{$author/Name/LastName/text()}
+					</lastname>,
+					<firstname>
+					{
+					$author/Name/FirstName/text()
+					}
+					</firstname>
+				}</Author>
+		}
+		</Authors>

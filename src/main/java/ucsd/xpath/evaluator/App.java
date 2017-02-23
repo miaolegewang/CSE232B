@@ -27,8 +27,6 @@ public class App
 
     	XQueryEval xquery = new XQueryEval();
     	for(int i = 0; i < testcases.size(); i++){
-    		System.out.println("Start");
-    		System.out.println(i);
     		
     		List<Node> tmp = xquery.parse(testcases.get(i));
     		if(tmp != null)

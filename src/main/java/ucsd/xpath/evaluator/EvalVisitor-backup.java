@@ -57,23 +57,18 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * ============================
 	 */
 	private void iterateFLWR(XQueryParser.FlwrContext ctx, int level, List<Node> results){
-		System.out.println("Level:" + Integer.toString(level));
 		if(level == ctx.forClause().bindings().bind().size()){
 			// All variables has been traversed
 			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
-			if(ctx.getChild(1).getClass().getSimpleName().equals("LetClauseContext")){
-				visit(ctx.letClause());
-			}
 //			if(ctx.whereClause().isEmpty() || visit(ctx.whereClause()).isEmpty()){ // Question: the first one shoudln't be with !? and should be OR?
 //				// where condition fails, do not add new content
 //				return;
 //			}
 			results.addAll(visit(ctx.returnClause()));
-			variables.clear();
-			variables.putAll(backup);
+			variables = backup;
 		} else {
 			String varName = ctx.forClause().bindings().bind(level).var().varName().getText();
-			List<Node> varQuery = new ArrayList<Node>(visit(ctx.forClause().bindings().bind(level).query()));
+			List<Node> varQuery = visit(ctx.forClause().bindings().bind(level).query());
 			for(Node n: varQuery){
 				variables.put(varName, new ArrayList<>(Arrays.asList(n)));
 				iterateFLWR(ctx, level + 1, results);
@@ -234,7 +229,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitXpath(@NotNull XQueryParser.XpathContext ctx) {
-		r = new ArrayList<Node>(visit(ctx.ap()));
+		r = visit(ctx.ap());
 		Document root = (Document)r.get(0);
 		r.remove(0);
 		r.add(root.getDocumentElement());
@@ -252,8 +247,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 */
 	@Override public List<Node> visitChild(@NotNull XQueryParser.ChildContext ctx) {
 		System.out.println(ctx.getText());
-		r.clear();
-		r.addAll(visit(ctx.query()));
+		r = visit(ctx.query());
 		String fullString = ctx.relativePath().getText();
 		if(!(fullString.length() >= 1 && fullString.charAt(0) == '.')){
 			// Want to check if the first two characters are ".." or '.'. If yes, then do not need to update array r by its descendants 
@@ -271,7 +265,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 */
 	
 	@Override public List<Node> visitDescendant(@NotNull XQueryParser.DescendantContext ctx) {
-		r = new ArrayList<Node>(visit(ctx.query()));
+		r = visit(ctx.query());
 		visit(ctx.dsl());
 		visit(ctx.relativePath());
 		return r;
@@ -292,6 +286,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	
 	@Override public List<Node> visitSl(@NotNull XQueryParser.SlContext ctx) {
 		List<Node> tmp = new ArrayList<Node>(r);
+		System.out.println(tmp.size());
 		r.clear();
 		for(int i = 0; i < tmp.size(); i++){
 			NodeList children = tmp.get(i).getChildNodes();
@@ -336,7 +331,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 				tmp.add(localNode);
 			}
 		}
-		r = new ArrayList<Node>(tmp);
+		r = tmp;
 		
 		return null;
 	}
@@ -367,7 +362,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> tmp = new ArrayList<Node>(r);
 		visit(ctx.relativePath(1));
 		List<Node> r1 = new ArrayList<Node>(r);
-		r = new ArrayList<Node>(tmp);
+		r = tmp;
 		visit(ctx.relativePath(0));
 		// Add nodes in r1, need to verify that the node does not exist in result before adding it to the list
 		for(Node node: r1){
@@ -423,7 +418,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			} else i++;
 			r.clear();
 		}
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		return null;
 	}
 	
@@ -439,7 +434,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		for(int i = 0; i < r.size(); i++){
 			nodes.remove(r.get(i));
 		}
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		return null;
 	}
 	
@@ -453,7 +448,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> nodes = new ArrayList<Node>(r);
 		visit(ctx.pathFilter(0));
 		List<Node> r1 = new ArrayList<Node>(r);
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		visit(ctx.pathFilter(1));
 		for(int i = 0; i < r.size();){
 			if(!r1.contains(r.get(i))){
@@ -473,7 +468,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> nodes = new ArrayList<Node>(r);
 		visit(ctx.pathFilter(0));
 		List<Node> r1 = new ArrayList<Node>(r);
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		visit(ctx.pathFilter(1));
 		for(int i = 0; i < r1.size(); i++){
 			if(!r.contains(nodes.get(i))){
@@ -505,7 +500,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			}
 			i++;
 		}
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		return null;
 	}
 	
@@ -531,7 +526,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			}
 			i++;
 		}
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		return null;
 	}
 	
