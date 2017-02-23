@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
  * operations with no return type.
  */
 public class XQueryBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements XQueryVisitor<T> {
-	
 	/**
 	 * {@inheritDoc}
 	 *

@@ -1,5 +1,2 @@
-doc("a.xml")//A/B/C/..
-doc("a.xml")//A/B/C/../*/..
-doc("a.xml")//A/.//B/./F
-doc("a.xml")//A/./F
-doc("a.xml")//A[.//B/F=./F]
+for $a in doc("j_caesar.xml")//ACT
+return $a
