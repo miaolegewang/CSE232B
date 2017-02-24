@@ -1,0 +1,172 @@
+<result>
+{
+document("j_caesar.xml")//(ACT,PERSONAE)/TITLE
+}
+</result>
+
+###
+<SCENES>
+    {doc("j_caesar.xml")//ACT[./TITLE]/*/SPEECH/../TITLE}
+</SCENES>
+
+###
+<result>
+{
+  for $a in	(for $s	in doc("j_caesar.xml")//ACT
+             return	$s),
+             $sc in $a/SCENE,
+             $sp in	$sc/SPEECH
+  where	     $sp/LINE/text() = "No worthier than the dust!"
+  return
+             <speaks>{
+                    <speaker>{$sp/SPEAKER/text()}</speaker>,
+                    <when>{
+                            <act>{$a/TITLE/text()}</act>,
+                            <scene>{$sc/TITLE/text()}</scene>
+                    }</when>
+             }</speaks>
+}
+</result>
+
+###
+<result>
+{
+for $a in doc("j_caesar.xml")//ACT
+let	$sc:=$a/SCENE, $sp:=$sc/SPEECH
+where $sp/LINE/text()="No worthier than the dust!"
+return <speaks>{
+         <who>{$sp/SPEAKER/text()}</who>,
+         <when>{<act>{$a/TITLE/text()}</act>,<scene>{$sc/TITLE/text()}</scene>}</when>
+       }</speaks>
+}
+</result>
+
+
+###
+<result>
+{
+for $a in doc("j_caesar.xml")//PERSONAE, $b in $a/PGROUP/PERSONA
+where ($b/text() = $a/../ACT/SCENE/SPEECH/SPEAKER/text())
+return <PERSONA>{$b/text()}</PERSONA>
+}
+</result>
+
+
+
+###
+<bib>
+{
+    for $b in doc("books.xml")/bib/book
+    where $b/publisher/text() = "Addison-Wesley" and $b/year/text() = "1992"
+    return
+        <book>{ $b/title, $b/year }</book>
+}
+</bib>
+
+
+###
+<results>
+{
+    for $b in doc("books.xml")/bib/book,
+        $t in $b/title,
+        $a in $b/author
+    return
+        <result>
+            {$t, $a}
+        </result>
+}
+</results>
+
+
+###
+<results>
+{
+    for $b in doc("books.xml")/bib/book
+    return
+    <result>
+        { $b/title, $b/author }
+    </result>
+}
+</results>
+
+
+
+###
+<books-with-prices>
+{
+for $b in doc("books.xml")/bib/book,
+    $a in doc("reviews.xml")/reviews/entry
+where $b/title = $a/title
+    return
+        <book-with-prices>
+            { $b/title,
+             <price-review>{ $a/price/text() }</price-review>,
+             <price>{ $b/price/text() }</price>
+            }
+        </book-with-prices>
+}
+</books-with-prices>
+
+
+
+###
+<books-with-prices>
+{
+for $b in doc("books.xml")/bib/book,
+    $a in doc("reviews.xml")/reviews/entry
+where $b/title = $a/title
+    return
+        <book-with-prices>
+            { $b/title,
+             <price-review>{ $a/price/text() }</price-review>,
+             <price>{ $b/price/text() }</price>
+            }
+        </book-with-prices>
+}
+</books-with-prices>
+
+
+###
+<bib>
+{(
+    for $b in doc("books.xml")/bib/book
+    where not empty($b/author)
+    return
+    <book>
+        { $b/title, $b/author }
+    </book>
+),(
+    for $b in doc("books.xml")/bib/book
+    where not empty($b/editor)
+    return
+    <reference>
+        { $b/title, $b/editor/affiliation}
+    </reference>
+)}
+</bib>
+
+
+###
+for $b1 in doc("books.xml")/bib/book,
+    $aj in $b1/author/first/text(),
+    $a1 in $b1/author,
+    $af1 in $a1/first/text(),
+    $al1 in $a1/last/text(),
+    $b2 in doc("books.xml")/bib/book,
+    $a21 in $b2/author,
+    $af21 in $a21/first/text(),
+    $al21 in $a21/last/text(),
+    $a22 in $b2/author,
+    $af22 in $a22/first/text(),
+    $al22 in $a22/last/text(),
+    $b3 in doc("books.xml")/bib/book,
+    $a3 in $b3/author,
+    $af3 in $a3/first/text(),
+    $al3 in $a3/last/text()
+where $al1 eq "Stevens" and
+    $af1 eq $af21 and $al1 eq $al21 and
+    $af22 eq $af3 and $al22 eq $al3
+return <triplet> {$b1, $b2, $b3} </triplet>
+
+
+

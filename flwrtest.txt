@@ -1,0 +1,64 @@
+let $c := <t>{"end"}</t>
+(
+(for $a in ("A", "B", "C"),
+     $b in ("1", "2", "3")
+ let $c := <t>{$a,$b}</t>
+     return $c),
+$c)
+
+
+
+###
+for $a in (for $a in ("0", "1")
+           let $a := ($a, "2")
+           return $a),
+    $a in ($a, "3")
+let $a := <t>{$a}</t>
+return $a
+
+
+###
+let $d := ("0", "1")
+for $d in (
+  for $d in (
+    for $d in $d
+    return $d
+  ) return $d
+) return $d
+
+
+###
+let $d := ("0", "1")
+for $d in (
+  for $d in (
+    (for $d in $d
+    return $d),
+    let $d := ("2", "3")
+    (for $d in $d
+    return $d)
+  ) return $d
+) return $d
+
+
+###
+for $b in doc("books.xml")/bib/book,
+    $t in $b/title,
+    $a in $b/author
+let $r :=
+<result>{"Title: ", $t/text(), ". Author: ", $a/first/text(), " ", $a/last/text()}</result>
+where $a/last/text() = "Stevens"
+return $r
+
+
+###
+(for $s1 in ("", "    "),
+     $s2 in ("", "  "),
+     $s3 in ("", " ")
+let $s := <x>{($s1, $s2, $s3, $s4, "*")}</x>
+return $s),
+(for $s1 in ("    ", ""),
+     $s2 in ("  ", ""),
+     $s3 in (" ", "")
+let $s := <x>{($s1, $s2, $s3, $s4, "*")}</x>
+return $s)
+

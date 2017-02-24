@@ -1,0 +1,204 @@
+for $a in ("1", "2", "3", "4", "5", "6", "7", "8", "9")
+let $c := $a, $a := <num>{$a}</num>
+where $a/text() = "1" and $c = "1"
+return $a
+
+
+###
+for $a in ("1", "2", "3", "4", "5", "6", "7", "8", "9")
+let $c := $a, $a := <num>{$a}</num>
+where $a/text() = "1" and $c = "0"
+return $a
+
+
+###
+let $d := "7"
+for $a in ("1", "2", "3", "4", "5", "6", "7", "8", "9")
+let $c := $a, $a := <num>{$a}</num>
+where $a/text() = "7" and $c = $d
+return $a
+
+
+###
+for $a in ("1", "2", "3", "4", "5", "6", "7", "8", "9")
+where empty($c)
+return <num>{$a}</num>
+
+
+###
+let $nums := ("1", "2", "3", "4", "5", "6", "7", "8", "9"),
+    $q := <n>{<a>{<c>{$nums}</c>}</a>,<b>{<d>{$nums}</d>}</b>}</n>
+for $a in $q/*
+where empty($a/c)
+return <num>{$a}</num>
+
+
+###
+let $x := "a",
+    $nums := ("1", "2", "3", "4", "5", "6", "7", "8", "9"),
+    $q := <n>{<a>{<c>{$nums}</c>}</a>,<b>{<d>{$nums}</d>}</b>}</n>
+for $a in $q/*
+where empty($x)
+return <num>{$a}</num>
+
+
+###
+<nums>{
+for $a in ("1", "2", "3"),
+    $b in ("1", "2", "3")
+where $a == $b
+return <num>{$a, $b}</num>
+}</nums>
+
+
+###
+<nums>{
+let $nums := ("0", "1")
+for $a in $nums,
+    $b in $nums
+where $a is $b
+return <num>{$a, $b}</num>
+}</nums>
+
+
+
+###
+<nums>{
+let $nums := ("0", "1")
+for $a in <n>{$nums}</n>/*,
+    $b in <n>{$nums}</n>/*
+where $a == $b
+return <num>{$a, $b}</num>
+}</nums>
+
+
+
+###
+<from1to7>{
+let $nums := ("0", "1")
+for $a in $nums, $b in $nums, $c in $nums
+let $n := ($a, $b, $c)
+where not ($a = "0" and $b = "0" and $c = "0")
+return <num>{$n}</num>
+}</from1to7>
+
+
+
+###
+<nums>{
+let $nums := ("0", "1")
+for $a in $nums, $b in $nums, $c in $nums
+let $n := ($a, $b, $c)
+where not ($a = $b or $b = $c)
+return <num>{$n}</num>
+}</nums>
+
+
+###
+let $nums := ("0", "1")
+for $a in $nums, $b in $nums
+let $n := ($a, $b, $c)
+where not not ($a = "0" and $b = "0")
+return <num>{$n, "7"}</num>
+
+
+###
+for $a in ("1", "2", "3", "4", "5", "6", "7", "8", "9")
+let $c := $a, $a := <num>{$a}</num>
+where $a/text() = "1" or $c = "1"
+return $a
+
+
+
+###
+for $a in ("1", "2", "3", "4", "5", "6", "7", "8", "9")
+let $c := $a, $a := <num>{$a}</num>
+where $a/text() = "1" or $c = "3" or $c = "7"
+return $a
+
+
+###
+<nums>{
+for $a in ("1", "2", "3"),
+    $b in ("1", "3", "5")
+where $a = "1" or $b = "1" or $a = $b
+return <num>{$a, $b}</num>
+}</nums>
+
+
+
+###
+<nums>{
+let $nums := ("0", "1")
+for $a in $nums, $b in $nums, $c in $nums
+let $n := ($a, $b, $c)
+where (not ($a = $b)) or $b = $c
+return <num>{$n}</num>
+}</nums>
+
+
+
+###
+let $d := "7"
+for $a in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"),
+    $c in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+where (not not $a = "0") and $c = $d
+return <bond>{($a, $a, $c)}</bond>
+
+
+###
+let $d := "7"
+for $a in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9"),
+    $c in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+where ((((((($a)))) = ((($c))))))
+return <num>{($a, $c)}</num>
+
+
+###
+for $num in <n>{("1", "2", "3", "4", "5")}</n>
+where some $a in $num satisfies $a/* = "1"
+return $num
+
+
+###
+for $num in <n>{("1", "2", "3", "4", "5")}</n>
+where some $a in $num satisfies $a/* = "1"
+return $a
+
+
+###
+for $num in <n>{("1", "2", "3", "4", "5")}</n>
+where some $a in $num, $b in $d, $c in $a/* satisfies $c = "1"
+return $num
+
+
+###
+<nums>{
+for $a in ("1", "2", "3"),
+    $b in ("1", "2", "3")
+where $a eq $b
+return <num>{$a, $b}</num>
+}</nums>
+
+
+###
+<nums>{
+let $nums := ("0", "1")
+for $a in <n>{$nums}</n>/*,
+    $b in <n>{$nums}</n>/*
+where $a = $b
+return <num>{$a, $b}</num>
+}</nums>
+
+
+###
+<nums>{
+let $nums1 := ("0", "1"),
+    $nums2 := ("1", "2")
+for $a in <n>{$nums1}</n>/*,
+    $b in <n>{$nums2}</n>/*
+where $a = $b
+return <num>{$a, $b}</num>
+}</nums>
+
+
