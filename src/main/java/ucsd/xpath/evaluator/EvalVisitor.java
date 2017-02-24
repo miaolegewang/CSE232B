@@ -102,22 +102,16 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	}
 	
 	private boolean isEqualList(List<Node> a, List<Node> b, boolean value){
-		if(a.size() != b.size())
-			return false;
+		// value: True - Value equality; false - identity equality
 		List<Node> tmp1 = new ArrayList<Node>(a);
 		List<Node> tmp2 = new ArrayList<Node>(b);
-		while(!tmp1.isEmpty()){
-			for(int i = 0; i < tmp2.size(); i++){
-				if((value && tmp2.get(i).isEqualNode(tmp1.get(0))) || (!value && tmp2.get(i).isSameNode(tmp1.get(0)))){
-					tmp2.remove(i);
-					break;
-				}
+		for(Node n1 : tmp1){
+			for(Node n2 : tmp2){
+				if((value && n1.isEqualNode(n2)) || (!value && n1.isSameNode(n2)))
+					return true;
 			}
-			tmp1.remove(0);
-			if(tmp1.size() != tmp2.size())
-				return false;
 		}
-		return true;
+		return false;
 	}
 	
 	private boolean listContainsElement(List<Node> list, Node target){
@@ -206,23 +200,11 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitQueryValueEq(@NotNull XQueryParser.QueryValueEqContext ctx) { 
-		List<Node> q1 = visit(ctx.query(0));
-		List<Node> q2 = visit(ctx.query(1));
-		List<Integer> checkq1 = new ArrayList<Integer>();
-		List<Integer> checkq2 = new ArrayList<Integer>();
-		
-		if(q1 == null || q2 == null || q1.size() != q2.size())	return new ArrayList<Node>();
-		
-		for(int i = 0; i < q1.size(); i++){
-			for(int j = 0; j < q2.size(); j++){
-				if(q1.get(i).isEqualNode(q2.get(j)) && !checkq1.contains(new Integer(i)) && !checkq2.contains(new Integer(j)) ){
-					checkq1.add(i);
-					checkq2.add(j);
-				}
-			}
+		List<Node> tmp = new ArrayList<Node>();
+		if(isEqualList(visit(ctx.query(0)), visit(ctx.query(1)), true)){
+			tmp.add(doc.createElement("Pass"));
 		}
-		
-		return checkq1.size() == q1.size() ? q1: new ArrayList<Node>();
+		return tmp;
 	}
 	
 	/**
@@ -232,22 +214,11 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitQueryIDEq(@NotNull XQueryParser.QueryIDEqContext ctx) {
-		List<Node> q1 = visit(ctx.query(0));
-		List<Node> q2 = visit(ctx.query(1));
-		List<Integer> checkq1 = new ArrayList<Integer>();
-		List<Integer> checkq2 = new ArrayList<Integer>();
-		
-		if(q1.size() != q2.size())	return new ArrayList<Node>();
-		for(int i = 0; i < q1.size(); i++){
-			for(int j = 0; j < q2.size(); j++){
-				if(q1.get(i).isSameNode(q2.get(j)) && !checkq1.contains(new Integer(i)) && !checkq2.contains(new Integer(j)) ){
-					checkq1.add(i);
-					checkq2.add(j);
-				}
-			}
+		List<Node> tmp = new ArrayList<Node>();
+		if(isEqualList(visit(ctx.query(0)), visit(ctx.query(1)), false)){
+			tmp.add(doc.createElement("Pass"));
 		}
-
-		return checkq1.size() == q1.size() ? new ArrayList<Node>(Arrays.asList(doc.createElement("Pass"))): new ArrayList<Node>();
+		return tmp;
 	}
 
 	/**
