@@ -13,12 +13,12 @@ query:
     | xpath						                                #absolutePath
     | stringConst                                               #string
     | '(' query ')'                                             #priority
-    | query ',' query                                           #pairQuery
     | query sl relativePath										#child
     | query dsl relativePath                             		#descendant
     | '<' tag '>' '{' query '}' '</' tag '>'                    #format
     | forClause (letClause)? (whereClause)? returnClause        #flwr
     | letClause query                                           #let
+    | query ',' query                                           #pairQuery
     ;
 
 ap: ('doc(' | 'document(') FILENAME ')';
