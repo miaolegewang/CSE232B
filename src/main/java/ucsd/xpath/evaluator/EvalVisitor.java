@@ -12,8 +12,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -89,9 +91,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 				return iterateSome(ctx, level + 1);
 			}
 			for(Node n : tmp){
-				if(ctx.bindings().bind(level).var().varName().equals("c")){
-					System.out.println(n.getNodeValue());
-				}
 				variables.put(ctx.bindings().bind(level).var().varName().getText(), new ArrayList<Node>(Arrays.asList(n)));
 				if(iterateSome(ctx, level + 1)){
 					return true;
@@ -129,9 +128,15 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> tmp = new ArrayList<Node>();
 		
 		for(int i = 0; i < r.size(); i++){
-			Node localNode = r.get(i).getParentNode();
-			if(localNode != null && !listContainsElement(tmp, localNode)){
-				tmp.add(localNode);
+			if(r.get(i).getNodeType() == Node.ATTRIBUTE_NODE){
+				Node localNode = ((Attr)r.get(i)).getOwnerElement();
+				if(localNode != null)
+					tmp.add(localNode);
+			} else {
+				Node localNode = r.get(i).getParentNode();
+				if(localNode != null && localNode.getNodeType() != Node.DOCUMENT_NODE && !listContainsElement(tmp, localNode)){
+					tmp.add(localNode);
+				}
 			}
 		}
 		r = tmp;
@@ -354,10 +359,14 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 */
 	@Override public List<Node> visitFormat(@NotNull XQueryParser.FormatContext ctx) {
 		String tagname = ctx.tag(0).getText();
-	    Node n = doc.createElement(tagname);
+	    Element n = doc.createElement(tagname);
 	    List<Node> tmp = visit(ctx.query());
 	    for(Node local: tmp){
-	    	n.appendChild(doc.importNode(local, true));
+	    	if(local.getNodeType() == Node.ATTRIBUTE_NODE){
+	    		n.setAttribute(((Attr)local).getName(), ((Attr)local).getValue());
+	    	} else {
+	    		n.appendChild(doc.importNode(local, true));
+	    	}
 	    }
 	    return new ArrayList<Node>(Arrays.asList(n));
 	}
@@ -434,7 +443,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	@Override public List<Node> visitXpath(@NotNull XQueryParser.XpathContext ctx) {
 		r = new ArrayList<Node>(visit(ctx.ap()));
 		Document root = (Document)r.get(0);
-		r.remove(0);
+		r.clear();
 		r.add(root.getDocumentElement());
 		if(ctx.dsl() != null){
 			visit(ctx.dsl());
@@ -506,7 +515,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 */
 	
 	@Override public List<Node> visitDsl(@NotNull XQueryParser.DslContext ctx) {
-		
 		for(int startIdx = 0; startIdx < r.size(); startIdx++){
 			Node tmp = r.get(startIdx);
 			NodeList children = tmp.getChildNodes();
@@ -526,16 +534,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitParent(@NotNull XQueryParser.ParentContext ctx) {
-		List<Node> tmp = new ArrayList<Node>();
-		
-		for(int i = 0; i < r.size(); i++){
-			Node localNode = r.get(i).getParentNode();
-			if(localNode != null && !listContainsElement(tmp, localNode)){
-				tmp.add(localNode);
-			}
-		}
-		r = tmp;
-		
+		backToParent();
 		return null;
 	}
 	
@@ -588,11 +587,17 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * It removes all the nodes that are not attribute nodes in the list
 	 */
 	@Override public List<Node> visitAttName(@NotNull XQueryParser.AttNameContext ctx) {
-		for(int i = 0; i < r.size();){
-			if(r.get(i).getNodeType() != Node.ATTRIBUTE_NODE || !r.get(i).getNodeName().equals(ctx.getText())){
-				r.remove(i);
-			} else i++;
+		backToParent();
+		List<Node> tmp = new ArrayList<Node>();
+		for(int i = 0; i < r.size(); i++){
+			if(r.get(i).getNodeType() == Node.ELEMENT_NODE){
+				Attr attNode = ((Element)r.get(i)).getAttributeNode(ctx.NAME().getText());
+				if(attNode != null){
+					tmp.add(attNode);
+				}
+			}
 		}
+		r = tmp;
 		return visitChildren(ctx);
 	}
 	
@@ -755,5 +760,21 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		return null;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitAll(@NotNull XQueryParser.AllContext ctx) {
+		List<Node> tmp = new ArrayList<Node>(r);
+		for(int i = 0; i < tmp.size();){
+			if(tmp.get(i).getNodeType() == Node.ATTRIBUTE_NODE)
+				tmp.remove(i);
+			else i++;
+		}
+		r = tmp;
+		return null;
+	}
 
 }
