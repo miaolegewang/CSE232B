@@ -1,5 +1,10 @@
+for $a in doc("book.xml")//Book
+where not($a/Author/Name/LastName is "Dan")
+return <Book>{$a/TITLE/text()}</Book>
+
+###
 for $a in doc("book.xml")//Book,
 	$at in $a/Author,
 	$bt in $a/Author
-where $at/Name/LastName/text() = $bt/Name/LastName/text() and not($at = $bt)
+where $at/Name/LastName/text() = $bt/Name/LastName/text() and not($at is $bt)
 return <Book>{$a/TITLE/text()}</Book>

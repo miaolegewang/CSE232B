@@ -1,0 +1,15 @@
+let $book := doc("book.xml")//Book
+for $at in (
+			for $k in $book
+			where not $k/TITLE/text() = "Jane Eyre"
+			return $k
+			),
+	$bt in (
+			for $k in $book 
+			where $k/TITLE/text() = "Jane Eyre" 
+			return $k
+			),
+	$ct in $at/Author,
+	$dt in $bt/Author
+where $ct/Name/LastName = $dt/Name/LastName
+return <Tuple>{<Book>{$at/TITLE/text()}</Book>,<Book>{$bt/TITLE/text()}</Book>}</Tuple>

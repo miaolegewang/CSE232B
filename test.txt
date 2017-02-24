@@ -1,23 +1,69 @@
-for $a in doc("book.xml")//Book
-			let $at := $a/Author
-return 
-		<Authors>{
-			for $author in $at
-				return <Author>{
-				<lastname>
-					{$author/Name/LastName/text()}
-					</lastname>,
-					<firstname>
-					{
-					$author/Name/FirstName/text()
-					}
-					</firstname>
-				}</Author>
-		}
-		</Authors>
+<result>
+{
+    for $a in document("j_caesar.xml")//ACT,
+        $sc in $a//SCENE,
+        $sp in $sc/SPEECH
+    where $sp/LINE/text() = "Et tu, Brute! Then fall, Caesar."
+    return <who>{$sp/SPEAKER/text()}</who>,
+           <when>{
+               <act>{$a/TITLE/text()}</act>,
+               <scene>{$sc/TITLE/text()}</scene>
+           }</when>
+}
+</result>
+
+
 ###
-for $a in doc("book.xml")//Book,
-	$at in $a/Author,
-	$bt in $a/Author
-where $at/Name/LastName/text() = $bt/Name/LastName/text() and not($at = $bt)
-return <Book>{$a/TITLE/text()}</Book>
+<acts>
+{
+    for $a in doc("j_caesar.xml")//ACT
+    where empty ( for $sp in $a/SCENE/SPEECH/SPEAKER
+                  where $sp/text() = "CASCA"
+                  return <speaker> {$sp/text()}</speaker>
+                )
+    return <act>{$a/TITLE/text()}</act>
+}
+</acts>
+
+
+###
+<result>{
+    for $a in (for $s in doc("j_caesar.xml")//ACT
+               return $s),
+        $sc in (for $t in $a/SCENE
+               return $t),
+        $sp in (for $d in $sc/SPEECH
+               return $d)
+        where $sp/LINE/text() = "Et tu, Brute! Then fall, Caesar."
+        return <who>{$sp/SPEAKER/text()}</who>,
+        <when>{
+            <act>{$a/TITLE/text()}</act>,
+            <scene>{$sc/TITLE/text()}</scene>
+        }</when>
+}</result>
+
+
+###
+<result>{
+    for $a in doc("j_caesar.xml")//PERSONAE, $b in $a/PERSONA
+    where ($b/text() = "JULIUS CAESAR") or ($b/text()= "Another Poet")
+    return $b
+}</result>
+
+
+###
+<result>{
+for $a in document("j_caesar.xml")//PERSONAE, $b in $a/PERSONA
+where not (($b/text() = "JULIUS CAESAR") or ($b/text() = "Another Poet") )
+return $b
+}</result>
+
+###
+for $s in document("j_caesar.xml")//SPEAKER
+return <speaks>{<who>{$s/text()}</who>,
+                for $a in document("j_caesar.xml")//ACT
+                where some $s1 in $a//SPEAKER satisfies $s1 eq $s
+                return <when>{$a/TITLE/text()}</when>}
+       </speaks>
+       
+       

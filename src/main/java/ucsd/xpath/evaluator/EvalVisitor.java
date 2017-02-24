@@ -46,9 +46,9 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	        parserException.printStackTrace();
 	    }
 		List<Node> test = visit(ctx.query());
-		if(test != null)
-			System.out.println("Success");
-		else System.out.println("Fail");
+//		if(test != null)
+//			System.out.println("Success");
+//		else System.out.println("Fail");
 		return test;
 	}
 		
@@ -62,9 +62,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		if(level == ctx.forClause().bindings().bind().size()){
 			// All variables has been traversed
 			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
-			if(ctx.letClause() != null){
-				visit(ctx.letClause());
-			}
 			
 			if(ctx.whereClause() != null && visit(ctx.whereClause()).size() == 0){ // Question: the first one shoudln't be with !? and should be OR?
 				// where condition fails, do not add new content
@@ -72,8 +69,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			}
 			
 			results.addAll(visit(ctx.returnClause()));
-			variables.clear();
-			variables.putAll(backup);
+			variables = backup;
 		} else {
 			String varName = ctx.forClause().bindings().bind(level).var().varName().getText();
 			List<Node> varQuery = new ArrayList<Node>(visit(ctx.forClause().bindings().bind(level).query()));
@@ -133,7 +129,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * =======================================
 	 * LetClause Implementation
 	 * =======================================
-	 */
+	 */	
 	
 	/**
 	 * {@inheritDoc}
@@ -273,13 +269,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> c2 = visit(ctx.cond(1));
 		List<Node> result = new ArrayList<Node>();
 		
-//		for(Node n1: c1){
-//			for(Node n2: c2){
-//				if(n1.isEqualNode(n2) && !result.contains(n1)){
-//					result.add(n1);
-//				}
-//			}
-//		}
 		if(!c1.isEmpty() && !c2.isEmpty()){
 			result.add(doc.createElement("Pass"));
 		}
@@ -333,6 +322,16 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 */
 	@Override public List<Node> visitPriorityCond(@NotNull XQueryParser.PriorityCondContext ctx) {
 		return visit(ctx.cond());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public List<Node> visitPriority(@NotNull XQueryParser.PriorityContext ctx) {
+		return visit(ctx.query());
 	}
 	
 	
@@ -417,7 +416,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitVariable(@NotNull XQueryParser.VariableContext ctx) {
-		return variables.getOrDefault(ctx.var().varName().getText(), new ArrayList<Node>());
+		return new ArrayList<Node>(variables.getOrDefault(ctx.var().varName().getText(), new ArrayList<Node>()));
 	}
 
 	/**
@@ -444,7 +443,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		Document root = (Document)r.get(0);
 		r.remove(0);
 		r.add(root.getDocumentElement());
-		if(ctx.getChild(1).getText().equals("//")){
+		if(!ctx.dsl().isEmpty()){
 			visit(ctx.dsl());
 		}
 		visit(ctx.relativePath());
@@ -457,13 +456,12 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitChild(@NotNull XQueryParser.ChildContext ctx) {
-		r.clear();
-		r.addAll(visit(ctx.query()));
+		r = new ArrayList<Node>(visit(ctx.query()));
 		String fullString = ctx.relativePath().getText();
 		if(!(fullString.length() >= 1 && fullString.charAt(0) == '.')){
 			// Want to check if the first two characters are ".." or '.'. If yes, then do not need to update array r by its descendants 
-			visit(ctx.sl());
-		}		
+			visit(ctx.getChild(1));
+		}
 		visit(ctx.relativePath());
 		return r;
 	}
@@ -476,7 +474,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 */
 	
 	@Override public List<Node> visitDescendant(@NotNull XQueryParser.DescendantContext ctx) {
-		r = new ArrayList<Node>(visit(ctx.query()));
+		r = visit(ctx.query());
 		visit(ctx.dsl());
 		visit(ctx.relativePath());
 		return r;
@@ -514,7 +512,9 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	
-	@Override public List<Node> visitDsl(@NotNull XQueryParser.DslContext ctx) {		
+	@Override public List<Node> visitDsl(@NotNull XQueryParser.DslContext ctx) {
+//		System.out.println(r.size());
+		
 		for(int startIdx = 0; startIdx < r.size(); startIdx++){
 			Node tmp = r.get(startIdx);
 			NodeList children = tmp.getChildNodes();
@@ -523,6 +523,10 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 					r.add(children.item(i));
 			}
 		}
+		
+//		System.out.println("Size of children");
+//		System.out.println(r.size());
+		
 		return null;
 	}
 	
@@ -541,7 +545,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 				tmp.add(localNode);
 			}
 		}
-		r = new ArrayList<Node>(tmp);
+		r = tmp;
 		
 		return null;
 	}
@@ -572,7 +576,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> tmp = new ArrayList<Node>(r);
 		visit(ctx.relativePath(1));
 		List<Node> r1 = new ArrayList<Node>(r);
-		r = new ArrayList<Node>(tmp);
+		r = tmp;
 		visit(ctx.relativePath(0));
 		// Add nodes in r1, need to verify that the node does not exist in result before adding it to the list
 		for(Node node: r1){
@@ -628,7 +632,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			} else i++;
 			r.clear();
 		}
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		return null;
 	}
 	
@@ -644,7 +648,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		for(int i = 0; i < r.size(); i++){
 			nodes.remove(r.get(i));
 		}
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		return null;
 	}
 	
@@ -658,7 +662,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> nodes = new ArrayList<Node>(r);
 		visit(ctx.pathFilter(0));
 		List<Node> r1 = new ArrayList<Node>(r);
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		visit(ctx.pathFilter(1));
 		for(int i = 0; i < r.size();){
 			if(!r1.contains(r.get(i))){
@@ -678,7 +682,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> nodes = new ArrayList<Node>(r);
 		visit(ctx.pathFilter(0));
 		List<Node> r1 = new ArrayList<Node>(r);
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		visit(ctx.pathFilter(1));
 		for(int i = 0; i < r1.size(); i++){
 			if(!r.contains(nodes.get(i))){
@@ -710,7 +714,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			}
 			i++;
 		}
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		return null;
 	}
 	
@@ -736,7 +740,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			}
 			i++;
 		}
-		r = new ArrayList<Node>(nodes);
+		r = nodes;
 		return null;
 	}
 	
