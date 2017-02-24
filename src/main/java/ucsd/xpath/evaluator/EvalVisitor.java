@@ -46,9 +46,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	        parserException.printStackTrace();
 	    }
 		List<Node> test = visit(ctx.query());
-//		if(test != null)
-//			System.out.println("Success");
-//		else System.out.println("Fail");
 		return test;
 	}
 		
@@ -60,15 +57,18 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 */
 	private void iterateFLWR(XQueryParser.FlwrContext ctx, int level, List<Node> results){
 		if(level == ctx.forClause().bindings().bind().size()){
-			// All variables has been traversed
 			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
+			// All variables has been traversed
+			if(ctx.letClause() != null)
+				visit(ctx.letClause());
+			
 			if(ctx.whereClause() != null && visit(ctx.whereClause()).size() == 0){ // Question: the first one shoudln't be with !? and should be OR?
 				// where condition fails, do not add new content
 				return;
 			}
-			
 			results.addAll(visit(ctx.returnClause()));
-			variables = backup;
+			variables.clear();
+			variables.putAll(backup);
 		} else {
 			String varName = ctx.forClause().bindings().bind(level).var().varName().getText();
 			List<Node> varQuery = new ArrayList<Node>(visit(ctx.forClause().bindings().bind(level).query()));
@@ -85,7 +85,13 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 			return !tmp.isEmpty();
 		} else {
 			List<Node> tmp = visit(ctx.bindings().bind(level).query());
+			if(tmp.isEmpty()){
+				return iterateSome(ctx, level + 1);
+			}
 			for(Node n : tmp){
+				if(ctx.bindings().bind(level).var().varName().equals("c")){
+					System.out.println(n.getNodeValue());
+				}
 				variables.put(ctx.bindings().bind(level).var().varName().getText(), new ArrayList<Node>(Arrays.asList(n)));
 				if(iterateSome(ctx, level + 1)){
 					return true;
@@ -122,6 +128,20 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		return false;
 	}
 	
+	/*
+	 * This function will have the same effect as visitParent
+	 */
+	private void backToParent(){
+		List<Node> tmp = new ArrayList<Node>();
+		
+		for(int i = 0; i < r.size(); i++){
+			Node localNode = r.get(i).getParentNode();
+			if(localNode != null && !listContainsElement(tmp, localNode)){
+				tmp.add(localNode);
+			}
+		}
+		r = tmp;
+	}
 
 
 	/*
@@ -352,8 +372,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitReturnClause(@NotNull XQueryParser.ReturnClauseContext ctx) {
-		System.out.println(ctx.getText());
-		return visit(ctx.query());
+		return new ArrayList<Node>(visit(ctx.query()));
 	}
 	
 	/**
@@ -395,7 +414,8 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> localResult = new ArrayList<Node>();
 				
 		iterateFLWR(ctx, 0, localResult);
-		variables = backup;
+		variables.clear();
+		variables.putAll(backup);
 		return localResult;
 	}
 		
@@ -406,7 +426,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitPairQuery(@NotNull XQueryParser.PairQueryContext ctx) {
-		List<Node> result = visit(ctx.query(0));
+		List<Node> result = new ArrayList<Node>(visit(ctx.query(0)));
 		result.addAll(visit(ctx.query(1)));
 		return result;
 	}
@@ -515,7 +535,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 */
 	
 	@Override public List<Node> visitDsl(@NotNull XQueryParser.DslContext ctx) {
-//		System.out.println(r.size());
 		
 		for(int startIdx = 0; startIdx < r.size(); startIdx++){
 			Node tmp = r.get(startIdx);
@@ -525,9 +544,6 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 					r.add(children.item(i));
 			}
 		}
-		
-//		System.out.println("Size of children");
-//		System.out.println(r.size());
 		
 		return null;
 	}
@@ -576,9 +592,15 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 */
 	@Override public List<Node> visitPathSequence(@NotNull XQueryParser.PathSequenceContext ctx) {
 		List<Node> tmp = new ArrayList<Node>(r);
+		if(ctx.relativePath(1).getText().length() > 1 && ctx.relativePath(1).getText().charAt(0) == '.'){
+			backToParent();
+		}
 		visit(ctx.relativePath(1));
 		List<Node> r1 = new ArrayList<Node>(r);
 		r = tmp;
+		if(ctx.relativePath(0).getText().length() > 1 && ctx.relativePath(0).getText().charAt(0) == '.'){
+			backToParent();
+		}
 		visit(ctx.relativePath(0));
 		// Add nodes in r1, need to verify that the node does not exist in result before adding it to the list
 		for(Node node: r1){
