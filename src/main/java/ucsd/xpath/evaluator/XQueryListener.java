@@ -140,6 +140,19 @@ public interface XQueryListener extends ParseTreeListener {
 	void exitLet(@NotNull XQueryParser.LetContext ctx);
 
 	/**
+	 * Enter a parse tree produced by the {@code join}
+	 * labeled alternative in {@link XQueryParser#query}.
+	 * @param ctx the parse tree
+	 */
+	void enterJoin(@NotNull XQueryParser.JoinContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code join}
+	 * labeled alternative in {@link XQueryParser#query}.
+	 * @param ctx the parse tree
+	 */
+	void exitJoin(@NotNull XQueryParser.JoinContext ctx);
+
+	/**
 	 * Enter a parse tree produced by {@link XQueryParser#tag}.
 	 * @param ctx the parse tree
 	 */
@@ -301,6 +314,17 @@ public interface XQueryListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAp(@NotNull XQueryParser.ApContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link XQueryParser#attrs}.
+	 * @param ctx the parse tree
+	 */
+	void enterAttrs(@NotNull XQueryParser.AttrsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link XQueryParser#attrs}.
+	 * @param ctx the parse tree
+	 */
+	void exitAttrs(@NotNull XQueryParser.AttrsContext ctx);
 
 	/**
 	 * Enter a parse tree produced by {@link XQueryParser#returnClause}.
@@ -471,6 +495,17 @@ public interface XQueryListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSl(@NotNull XQueryParser.SlContext ctx);
+
+	/**
+	 * Enter a parse tree produced by {@link XQueryParser#attr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAttr(@NotNull XQueryParser.AttrContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link XQueryParser#attr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAttr(@NotNull XQueryParser.AttrContext ctx);
 
 	/**
 	 * Enter a parse tree produced by the {@code emptyQuery}

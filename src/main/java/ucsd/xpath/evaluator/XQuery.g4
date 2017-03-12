@@ -19,9 +19,12 @@ query:
     | forClause (letClause)? (whereClause)? returnClause        #flwr
     | letClause query                                           #let
     | query ',' query                                           #pairQuery
+    | JOIN '(' query ',' query ',' attrs ',' attrs ')'			#join
     ;
 
 ap: ('doc(' | 'document(') FILENAME ')';
+attr: NAME;
+attrs: '[' attr (',' attr)* ']';
 stringConst: STR;
 
 var: '$' varName ;
@@ -132,29 +135,62 @@ pathFilter:
  * =====================
  */
 
-NOT: 'not';
-AND: 'and';
-OR: 'or';
+JOIN: J O I N;
+NOT: N O T;
+AND: A N D;
+OR: O R;
 TEXTFUNCTION: 'text()';
 FNAME: [a-zA-Z0-9_'.''/']+ '.xml';
 SLASH: '/';
 DSLASH: '//';
 CONCAT: ',';
-ValueEq: '=' | 'eq';
-IDEq: '==' | 'is';
+ValueEq: '=' | (E Q);
+IDEq: '==' | (I S);
 ASTERISK: '*';
 DOT: '.';
 UPPER: '..';
-RETURN: 'return';
-FOR: 'for';
-IN: 'in';
-LET: 'let';
+RETURN: R E T U R N;
+FOR: F O R;
+IN: I N;
+LET: L E T;
 ASSIGN: ':=';
-WHERE: 'where';
-SOME: 'some';
-EMPTY: 'empty';
-SATISFIES: 'satisfies';
+WHERE: W H E R E;
+SOME: S O M E;
+EMPTY: E M P T Y;
+SATISFIES: S A T I S F I E S;
 FILENAME: '"' [a-zA-Z0-9_]+ '.xml"';
 STR: '"' (~'"')* '"';
 NAME: [a-zA-Z0-9_]+;
 WHITESPACES: [ \n\t\r]+ -> skip;
+
+/*
+ * =====================
+ * Character
+ * =====================
+ */
+A: 'a' | 'A';
+B: 'b' | 'B';
+C: 'c' | 'C';
+D: 'd' | 'D';
+E: 'e' | 'E';
+F: 'f' | 'F';
+G: 'g' | 'G';
+H: 'h' | 'H';
+I: 'i' | 'I';
+J: 'j' | 'J';
+K: 'k' | 'K';
+L: 'l' | 'L';
+M: 'm' | 'M';
+N: 'n' | 'N';
+O: 'o' | 'O';
+P: 'p' | 'P';
+Q: 'q' | 'Q';
+R: 'r' | 'R';
+S: 's' | 'S';
+T: 't' | 'T';
+U: 'u' | 'U';
+V: 'v' | 'V';
+W: 'w' | 'W';
+X: 'x' | 'X';
+Y: 'y' | 'Y';
+Z: 'z' | 'Z';

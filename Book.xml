@@ -1,7 +1,7 @@
 <BookList>
 	<Book>
 		<TITLE>Jane Eyre</TITLE>
-		<Year>1997</Year>
+		<Year>1994</Year>
 		<Author>
 			<Name>
 				<LastName>Doubi</LastName>
@@ -40,6 +40,18 @@
 			<Name>
 				<LastName>Zha</LastName>
 				<FirstName>Dan</FirstName>
+			</Name>
+		</Author>
+		<Author>
+			<Name>
+				<LastName>Bronte</LastName>
+				<FirstName>Emily</FirstName>
+			</Name>
+		</Author>
+		<Author>
+			<Name>
+				<LastName>Test</LastName>
+				<FirstName>Test</FirstName>
 			</Name>
 		</Author>
 	</Book>

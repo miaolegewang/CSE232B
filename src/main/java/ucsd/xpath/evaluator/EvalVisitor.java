@@ -31,8 +31,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	List<Node> r;
 	
 	Document doc;
-	
-	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
 	
 	/**
 	 * {@inheritDoc}
@@ -41,6 +40,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public List<Node> visitXquery(@NotNull XQueryParser.XqueryContext ctx) {
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try{
 	    	DocumentBuilder builder = factory.newDocumentBuilder();
 	    	doc = builder.newDocument();
@@ -50,13 +50,52 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> test = visit(ctx.query());
 		return test;
 	}
-		
 	
 	/*
 	 * ============================
 	 * Internal use function
 	 * ============================
 	 */
+	
+	private String printXML(Node target){
+		return "";
+	}
+	
+	private List<String> transform(XQueryParser.AttrsContext ctx){
+		List<String> result = new ArrayList<String>();
+		for(XQueryParser.AttrContext at: ctx.attr()){
+			result.add(at.getText());
+		}
+		return result;
+	}
+	
+	private List<Node> findChild(Node target){
+		List<Node> result = new ArrayList<Node>();
+		NodeList children = target.getChildNodes();
+		for(int i = 0; i < children.getLength(); i++){
+			result.add(children.item(i));
+		}
+		return result;
+	}
+	
+	private TNode convertChildren(Node target, List<String> attrs){
+		Element result = doc.createElement("container");
+		for(String att: attrs){
+			NodeList children = target.getChildNodes();
+			for(int i = 0; i < children.getLength(); i++){
+				if(children.item(i).getNodeType() == Node.ELEMENT_NODE && children.item(i).getNodeName().equals(att)){
+					Element root = doc.createElement("result");
+					NodeList tmpChild = children.item(i).getChildNodes();
+					for(int j = 0; j < tmpChild.getLength(); j++){
+						root.appendChild(doc.importNode(tmpChild.item(j), true));
+					}
+					result.appendChild(root);
+				}
+			}
+		}
+		return new TNode(result);
+	}
+	
 	private void iterateFLWR(XQueryParser.FlwrContext ctx, int level, List<Node> results){
 		if(level == ctx.forClause().bindings().bind().size()){
 			HashMap<String, List<Node>> backup = new HashMap<String, List<Node>>(variables);
@@ -141,7 +180,65 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		}
 		r = tmp;
 	}
-
+	
+	
+	/*
+	 * =======================================
+	 * Join Implementation
+	 * =======================================
+	 */
+	/**
+	 * Implement instructions:
+	 * 	1. evaluate both queries
+	 *  2. store the attributes of the sequence with smaller number into hashmap
+	 *  3. for each node of the other sequence, if the value of attributes is stored in hashmap, pair up
+	 *  4. for each tuple, combine all the child nodes
+	 *  5. return the result list
+	 *  
+	 * Bug:
+	 * 	Return empty list
+	 * 	My guess is when invoking containsKey(), it uses equals which may call isSameNode instead of isEqualNode
+	 */
+	@Override public List<Node> visitJoin(@NotNull XQueryParser.JoinContext ctx) {
+		HashMap<TNode, List<Node>> hashJoin = new HashMap<TNode, List<Node>>();
+		List<Node> result = new ArrayList<Node>();
+		List<Node> left = new ArrayList<Node>(visit(ctx.query(0)));
+		List<Node> right = new ArrayList<Node>(visit(ctx.query(1)));
+		List<String> latt = transform(ctx.attrs(0));
+		List<String> ratt = transform(ctx.attrs(1));
+		List<Node> small = left.size() < right.size() ? left : right,
+				large = left.size() < right.size() ? right : left;
+		List<String> smatt = left.size() < right.size() ? latt : ratt,
+				lgatt = left.size() < right.size() ? ratt : latt;
+		
+		// store into hash map
+		for(Node smnode : small){
+			TNode key = convertChildren(smnode, smatt);
+			if(hashJoin.containsKey(key)){
+				hashJoin.get(key).add(smnode);
+			} else hashJoin.put(key, new ArrayList<Node>(Arrays.asList(smnode)));
+		}
+		
+		// actual join operation
+		for(Node lgnode : large){
+			TNode attributes = convertChildren(lgnode, lgatt);
+			if(hashJoin.containsKey(attributes)){
+				for(Node smnode : hashJoin.get(attributes)){
+					Element container = doc.createElement("tuple");
+					List<Node> child = findChild(smnode);
+					child.addAll(findChild(lgnode));
+					for(Node childnode: child){
+						container.appendChild(doc.importNode(childnode, true));
+					}
+					result.add(container);
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	
 
 	/*
 	 * =======================================

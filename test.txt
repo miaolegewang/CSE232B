@@ -1,45 +1,16 @@
-<acts> 
- {	for $a in doc("j_caesar.xml")//ACT
-where empty ( for $sp in $a/SCENE/SPEECH/SPEAKER
- where $sp/text() = "CASCA" 
-   return <speaker> {$sp/text()}</speaker> 
-     )
-
-            return <act>{$a/TITLE/text()}</act>
-
-        }
-</acts>
+join(
+				doc("Book.xml")//Book,
+				doc("books.xml")//book,
+				[Year],
+				[year]
+			)
+			
 
 ###
-
-<result>{  for $a in (for $s in doc("j_caesar.xml")//ACT 
-return $s), 
-       $sc in (for $t in $a/SCENE 
-return $t),
-$sp in (for $d in $sc/SPEECH 
- return $d)
-  where $sp/LINE/text() = "Et tu, Brute! Then fall, Caesar."
-     return <who>{$sp/SPEAKER/text()}</who>,
-<when>{
-<act>{$a/TITLE/text()}</act>,
-<scene>{$sc/TITLE/text()}</scene>
-}</when>
-}
-</result>
-
-###
-
-<result>{
-for $a in doc("j_caesar.xml")//PERSONAE, $b in $a/PERSONA
- where ($b/text() = "JULIUS CAESAR") or ($b/text()= "Another Poet")
-return $b
-       }
-</result>
-
-###
-<result>{
-for $a in document("j_caesar.xml")//PERSONAE, $b in $a/PERSONA 
-  where not (($b/text() = "JULIUS CAESAR") or ($b/text() = "Another Poet") )
-   return $b
-}
-</result>
+for $a in doc("Book.xml")//Book,
+	$b in doc("books.xml")//book
+where $a/Year/text() = $b/year/text()
+return <tuple>{
+			$a/*,
+			$b/*
+			}</tuple>
