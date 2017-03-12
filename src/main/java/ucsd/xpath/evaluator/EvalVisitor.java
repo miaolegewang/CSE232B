@@ -78,7 +78,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		return result;
 	}
 	
-	private TNode convertChildren(Node target, List<String> attrs){
+	private String convertChildren(Node target, List<String> attrs){
 		Element result = doc.createElement("container");
 		for(String att: attrs){
 			NodeList children = target.getChildNodes();
@@ -93,7 +93,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 				}
 			}
 		}
-		return new TNode(result);
+		return convertNodeToString(result);
 	}
 	
 	private void iterateFLWR(XQueryParser.FlwrContext ctx, int level, List<Node> results){
@@ -181,6 +181,19 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		r = tmp;
 	}
 	
+	private String convertNodeToString(Node root){
+		String result = "";
+		NodeList allChildren = root.getChildNodes();
+		if(allChildren.getLength() == 0){
+			return result;
+		}else{
+			for(int i = 0; i < allChildren.getLength(); i++){
+				result += allChildren.item(i).getNodeName() + allChildren.item(i).getTextContent();
+			}
+			return result;
+		}
+		
+	}
 	
 	/*
 	 * =======================================
@@ -200,7 +213,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 	 * 	My guess is when invoking containsKey(), it uses equals which may call isSameNode instead of isEqualNode
 	 */
 	@Override public List<Node> visitJoin(@NotNull XQueryParser.JoinContext ctx) {
-		HashMap<TNode, List<Node>> hashJoin = new HashMap<TNode, List<Node>>();
+		HashMap<String, List<Node>> hashJoin = new HashMap<String, List<Node>>();
 		List<Node> result = new ArrayList<Node>();
 		List<Node> left = new ArrayList<Node>(visit(ctx.query(0)));
 		List<Node> right = new ArrayList<Node>(visit(ctx.query(1)));
@@ -213,7 +226,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		
 		// store into hash map
 		for(Node smnode : small){
-			TNode key = convertChildren(smnode, smatt);
+			String key = convertChildren(smnode, smatt);
 			if(hashJoin.containsKey(key)){
 				hashJoin.get(key).add(smnode);
 			} else hashJoin.put(key, new ArrayList<Node>(Arrays.asList(smnode)));
@@ -221,7 +234,7 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		
 		// actual join operation
 		for(Node lgnode : large){
-			TNode attributes = convertChildren(lgnode, lgatt);
+			String attributes = convertChildren(lgnode, lgatt);
 			if(hashJoin.containsKey(attributes)){
 				for(Node smnode : hashJoin.get(attributes)){
 					Element container = doc.createElement("tuple");

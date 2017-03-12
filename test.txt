@@ -1,5 +1,5 @@
 join(
-				doc("Book.xml")//Book,
+				doc("book.xml")//Book,
 				doc("books.xml")//book,
 				[Year],
 				[year]
@@ -7,7 +7,7 @@ join(
 			
 
 ###
-for $a in doc("Book.xml")//Book,
+for $a in doc("book.xml")//Book,
 	$b in doc("books.xml")//book
 where $a/Year/text() = $b/year/text()
 return <tuple>{

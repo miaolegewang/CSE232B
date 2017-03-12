@@ -1,1 +1,37 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><Result/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><Result><tuple>
+		<TITLE f="11">Jane Eyre</TITLE>
+		<Year>1994</Year>
+		<Author>
+			<Name>
+				<LastName>Doubi</LastName>
+				<FirstName>Peter</FirstName>
+			</Name>
+		</Author>
+		<Author>
+			<Name>
+				<LastName f="13">Zha</LastName>
+				<FirstName>Dan</FirstName>
+			</Name>
+		</Author>
+		<Author>
+			<Name>
+				<LastName>Yamiedie</LastName>
+				<FirstName>Dan</FirstName>
+			</Name>
+		</Author>
+		<Author>
+			<Name>
+				<LastName>Zha</LastName>
+				<FirstName>Jidan</FirstName>
+			</Name>
+		</Author>
+	
+    <title>TCP/IP Illustrated</title>
+    <author>
+      <last>Stevens</last>
+      <first>W.</first>
+    </author>
+    <year>1994</year>
+    <publisher>Addison-Wesley</publisher>
+    <price>65.95</price>
+  </tuple></Result>
