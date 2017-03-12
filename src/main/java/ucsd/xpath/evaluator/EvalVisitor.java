@@ -187,8 +187,9 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		if(allChildren.getLength() == 0){
 			return result;
 		}else{
+			result += root.getNodeName() + root.getTextContent();
 			for(int i = 0; i < allChildren.getLength(); i++){
-				result += allChildren.item(i).getNodeName() + allChildren.item(i).getTextContent();
+				result += convertNodeToString(allChildren.item(i));
 			}
 			return result;
 		}
