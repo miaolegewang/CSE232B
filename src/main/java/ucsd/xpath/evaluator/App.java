@@ -73,7 +73,7 @@ public class App
     		System.out.println("Start File " + Integer.toString(i + 1));
     		System.out.println(testcases.get(i));
     		String rewrittenQuery = xquery.rewrite(testcases.get(i));
-    		String query = rewrittenQuery.isEmpty()? testcases.get(i) : rewrittenQuery;
+    		String query = rewrittenQuery == null? testcases.get(i) : rewrittenQuery;
     		WriteFile.writeTo(query, "rewrite_query_" + Integer.toString(i + 1) + ".txt");
     		System.out.println("");
     	}

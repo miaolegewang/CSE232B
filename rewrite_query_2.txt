@@ -1,0 +1,7 @@
+for $a in doc("book.xml")//Book,
+	$b in doc("books.xml")//book
+
+return <tuple>{
+			$a/*,
+			$b/*
+			}</tuple>

@@ -1,0 +1,8 @@
+join(
+				doc("book.xml")//Book,
+				doc("books.xml")//book,
+				[Year],
+				[year]
+			)
+			
+
