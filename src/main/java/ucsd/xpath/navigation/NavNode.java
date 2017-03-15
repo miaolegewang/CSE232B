@@ -30,7 +30,7 @@ public class NavNode {
 		this._value = value;
 		this._children = new HashMap<>();
 		this._cond = new ArrayList<>();
-		this._root = null;
+		this._root = this;
 	}
 	
 	public NavNode(int type, String value, String edge){
@@ -39,7 +39,7 @@ public class NavNode {
 		this._edge = edge;
 		this._children = new HashMap<>();
 		this._cond = new ArrayList<>();
-		this._root = null;
+		this._root = this;
 	}
 	
 	public NavNode(NavNode node){
@@ -83,6 +83,10 @@ public class NavNode {
 	
 	public HashMap<String, NavNode> children(){
 		return this._children;
+	}
+	
+	public List<NavNode> childrenList(){
+		return new ArrayList<>(this._children.values());
 	}
 	
 	/*

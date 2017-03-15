@@ -220,6 +220,21 @@ public class EvalVisitor extends XQueryBaseVisitor<List<Node>>{
 		List<Node> right = new ArrayList<Node>(visit(ctx.query(1)));
 		List<String> latt = transform(ctx.attrs(0));
 		List<String> ratt = transform(ctx.attrs(1));
+		
+		if(latt.isEmpty()){
+			for(Node lnode : left){
+				for(Node rnode: right){
+					Element container = doc.createElement("tuple");
+					List<Node> child = findChild(lnode);
+					child.addAll(findChild(rnode));
+					for(Node childNode: child){
+						container.appendChild(doc.importNode(childNode, true));
+					}
+				}
+			}
+			return result;
+		}
+		
 		List<Node> small = left.size() < right.size() ? left : right,
 				large = left.size() < right.size() ? right : left;
 		List<String> smatt = left.size() < right.size() ? latt : ratt,
