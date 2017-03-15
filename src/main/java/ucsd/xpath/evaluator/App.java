@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import ucsd.xpath.filereader.Readfile;
+import ucsd.xpath.filereader.WriteFile;
 import ucsd.xpath.xmlparser.DomParser;
 
 
@@ -40,23 +41,8 @@ public class App
 	
     public static void main( String[] args ) throws ParserConfigurationException
     {
-    	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    	DocumentBuilder builder = factory.newDocumentBuilder();
-    	Document doc = builder.newDocument();
-    	Element test1 = doc.createElement("test");
-    	Element test2 = doc.createElement("test");
-    	test1.appendChild(doc.createTextNode("TEXT1"));
-    	test1.appendChild(doc.createTextNode("TEXT2"));
-    	test2.appendChild(doc.createTextNode("TEXT1"));
-    	test2.appendChild(doc.createTextNode("TEXT2"));
-//    	System.out.println(convertNodeToString(test1));
-//    	test1.appendChild(test2);
-//    	PNode hehe = new PNode(test1);
-//    	PNode quxizao = new PNode(test2);
-//    	HashMap<PNode, Integer> test = new HashMap<PNode, Integer>();
-//    	test.put(hehe, 1);
-//    	System.out.println(Boolean.toString(test.containsKey(quxizao)));
-    	manual_test("test.txt");
+//    	manual_test("test.txt");
+    	RewriteTest("test.txt");
     }
     
     /*
@@ -79,4 +65,17 @@ public class App
     	}
     }
    
+    public static void RewriteTest(String filename){
+    	List<String> testcases = Readfile.read(filename);
+    	
+    	for(int i = 0; i < testcases.size(); i++){
+    		XQueryEval xquery = new XQueryEval();
+    		System.out.println("Start File " + Integer.toString(i + 1));
+    		System.out.println(testcases.get(i));
+    		String rewrittenQuery = xquery.rewrite(testcases.get(i));
+    		String query = rewrittenQuery.isEmpty()? testcases.get(i) : rewrittenQuery;
+    		WriteFile.writeTo(query, "rewrite_query_" + Integer.toString(i + 1) + ".txt");
+    		System.out.println("");
+    	}
+    }
 }
