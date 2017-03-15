@@ -40,13 +40,22 @@ public class NavNode {
 		this._cond = new ArrayList<>();
 	}
 	
+	public NavNode(NavNode node){
+		this._type = node.type();
+		this._children = new HashMap<>(node.children());
+		this._cond = new ArrayList<>(node.condition());
+		this._root = node.root();
+		this._edge = node.edge();
+		this._value = node.name();
+	}
+	
 	/*
 	 * =========================
 	 * Accessor
 	 * =========================
 	 */
 	
-	public String getName(){
+	public String name(){
 		return this._value;
 	}
 	
@@ -58,8 +67,8 @@ public class NavNode {
 		return this._root;
 	}
 	
-	public NavNode getChild(String name){
-		return _children.getOrDefault(name, null);
+	public NavNode child(String name){
+		return this._children.getOrDefault(name, null);
 	}
 	
 	public String edge(){
@@ -68,6 +77,10 @@ public class NavNode {
 	
 	public List<NavNode> condition(){
 		return this._cond;
+	}
+	
+	public HashMap<String, NavNode> children(){
+		return this._children;
 	}
 	
 	/*
