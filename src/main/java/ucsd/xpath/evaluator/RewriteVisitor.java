@@ -67,7 +67,8 @@ public class RewriteVisitor extends XQueryBaseVisitor<String>{
 	    result += joinList(fors, ",\n") + "\n";
 	    
 	    // where clause
-	    result += "where" + joinList(conditions, " and ") + "\n";
+	    if(!conditions.isEmpty())
+	    	result += "where" + joinList(conditions, " and ") + "\n";
 	     
 	    // return clause
 	    List<String> returns = new ArrayList<>();
@@ -251,11 +252,11 @@ public class RewriteVisitor extends XQueryBaseVisitor<String>{
 			List<String> firstAttrs = new ArrayList<>(), secondAttrs = new ArrayList<>();
 			for(Pair attr : joinMap.get(rStr)){
 				if(root.get(attr.first).root().name().equals(r.first)){
-					firstAttrs.add(attr.first);
-					secondAttrs.add(attr.second);
+					firstAttrs.add(attr.first.substring(1));
+					secondAttrs.add(attr.second.substring(1));
 				} else {
-					firstAttrs.add(attr.second);
-					secondAttrs.add(attr.first);
+					firstAttrs.add(attr.second.substring(1));
+					secondAttrs.add(attr.first.substring(1));
 				}
 			}
 			String joinClause = "join(\n " + firstForClause + ",\n " + secondForClause + ",\n ["
@@ -299,7 +300,8 @@ public class RewriteVisitor extends XQueryBaseVisitor<String>{
 		} else if(first.equals("const") || second.equals("const") || root.get(first).root() == root.get(second).root()){
 			String varName = first.equals("const") ? second : first;
 			String constStr = first.equals("const") ? first : second;
-			NavNode tmp = constStr.equals("const") ? new NavNode(NavNode.CONSTANT_NODE, ctx.query(1).getText()) : root.get(constStr);
+			int idx = first.equals("const") ? 0 : 1;
+			NavNode tmp = constStr.equals("const") ? new NavNode(NavNode.CONSTANT_NODE, ctx.query(idx).getText()) : root.get(constStr);
 			root.get(varName).addCond(tmp);
 		}
 		return null;
@@ -334,7 +336,7 @@ public class RewriteVisitor extends XQueryBaseVisitor<String>{
 	 */
 	@Override public String visitReturnClause(@NotNull XQueryParser.ReturnClauseContext ctx) {
 		fromReturnClause = true;
-		String tmp = visit(ctx.query());
+		String tmp = "return " + visit(ctx.query());
 		fromReturnClause = false;
 		return tmp;
 	}

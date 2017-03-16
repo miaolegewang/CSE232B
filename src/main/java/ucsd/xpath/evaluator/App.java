@@ -42,7 +42,8 @@ public class App
     public static void main( String[] args ) throws ParserConfigurationException
     {
 //    	manual_test("test.txt");
-    	RewriteTest("test.txt");
+//    	RewriteTest("test.txt");
+    	OptimizeTest("test.txt");
     }
     
     /*
@@ -76,6 +77,27 @@ public class App
     		String query = rewrittenQuery == null? testcases.get(i) : rewrittenQuery;
     		WriteFile.writeTo(query, "rewrite_query_" + Integer.toString(i + 1) + ".txt");
     		System.out.println("");
+    	}
+    }
+    
+    public static void OptimizeTest(String filename){
+    	List<String> testcases = Readfile.read(filename);
+    	
+    	for(int i = 0; i < testcases.size(); i++){
+    		XQueryEval xquery = new XQueryEval();
+    		System.out.println("Start File " + Integer.toString(i + 1));
+    		System.out.println(testcases.get(i));
+    		String rewrittenQuery = xquery.rewrite(testcases.get(i));
+    		String query = rewrittenQuery == null? testcases.get(i) : rewrittenQuery;
+    		WriteFile.writeTo(query, "rewrite_query_" + Integer.toString(i + 1) + ".txt");
+    		List<Node> tmp = xquery.parse(query);
+    		try{
+    			DomParser.WriteXMLFile(tmp, filename + "_out_" + Integer.toString(i + 1) + ".xml");
+    		} catch (Exception e){
+    			e.printStackTrace();
+    		}
+    		System.out.println("Finish File " + Integer.toString(i + 1) + "\n");
+
     	}
     }
 }

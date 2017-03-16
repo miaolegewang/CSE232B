@@ -1,0 +1,8 @@
+<!ELEMENT books (titles,reviews)>
+<!ELEMENT titles (book_title*)>
+<!ELEMENT book_title        (isbn,title)>
+<!ELEMENT isbn        (#PCDATA)>
+<!ELEMENT title        (#PCDATA)>
+<!ELEMENT reviews (book_review*)>
+<!ELEMENT book_review        (isbn,review)>
+<!ELEMENT review        (#PCDATA)>

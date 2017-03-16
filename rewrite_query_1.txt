@@ -1,36 +1,35 @@
 for $taylorSwift in join(
  join(
  (
-for $b1 in doc("input.xml")/book,
-$aj in $b1/author/first/text(),
-$a1 in $b1/author,
-$af1 in $a1/first,
-$al1 in $a1/last
-where $aj = "John" 
-return <tuple>{ <b1>{$b1}</b1> , <aj>{$aj}</aj> , <a1>{$a1}</a1> , <af1>{$af1}</af1> , <al1>{$al1}</al1> }</tuple>
-),
- (
-for $b2 in doc("input.xml")/book,
+for $b2 in doc("books.xml")//book,
 $a21 in $b2/author,
-$al21 in $a21/last,
-$af21 in $a21/first,
+$al21 in $a21/last/text(),
+$af21 in $a21/first/text(),
 $a22 in $b2/author,
-$al22 in $a22/last,
-$af22 in $a22/first
-where
+$al22 in $a22/last/text(),
+$af22 in $a22/first/text()
 return <tuple>{ <b2>{$b2}</b2> , <a21>{$a21}</a21> , <al21>{$al21}</al21> , <af21>{$af21}</af21> , <a22>{$a22}</a22> , <al22>{$al22}</al22> , <af22>{$af22}</af22> }</tuple>
 ),
- [$af1,$al1], [$af21,$al21])
+ (
+for $b1 in doc("books.xml")//book,
+$aj in $b1/author/first/text(),
+$a1 in $b1/author,
+$al23333 in $a1/last/text(),
+$af1 in $a1/first/text(),
+$al1 in $a1/last/text()
+where $aj = "W."  and  $aj = $aj  and  $al1 = $al23333 
+return <tuple>{ <b1>{$b1}</b1> , <aj>{$aj}</aj> , <a1>{$a1}</a1> , <al23333>{$al23333}</al23333> , <af1>{$af1}</af1> , <al1>{$al1}</al1> }</tuple>
+),
+ [af21,al21], [af1,al1])
 ,
  (
-for $b3 in doc("input.xml")/book,
+for $b3 in doc("books.xml")//book,
 $a3 in $b3/author,
-$af3 in $a3/first,
-$al3 in $a3/last
-where
+$af3 in $a3/first/text(),
+$al3 in $a3/last/text()
 return <tuple>{ <b3>{$b3}</b3> , <a3>{$a3}</a3> , <af3>{$af3}</af3> , <al3>{$al3}</al3> }</tuple>
 ),
- [$af22,$al22], [$af3,$al3])
+ [af22,al22], [af3,al3])
 
 
-<triplet>{$taylorSwift/b1/*, $taylorSwift/b2/*, $taylorSwift/b3/*}</triplet>
+return <triplet>{$taylorSwift/b1/*/title, $taylorSwift/b2/*/@year, $taylorSwift/b3/*/author}</triplet>
