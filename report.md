@@ -10,18 +10,14 @@ The Join function signature is `join([XQuery1, XQuery2, [attr1], [attr2])`. We u
 Since each attributes are actually the text nodes which are the leaves of the XML tree, the time complexity of printing out the parent node is O(2c) where c is the number of attributes joined on. Since it takes constant time in average to search a key in HashMap, the time complexity is O((m + n)c) where m is the size of the results evaluating Xquery1 and n is the size of results evaluating Xquery2.
 
 #### 2. Join detection
-Since we are told not to detect self-join, it's obvious that if there's only one absolute path existing, then there's no join. That is to say, the number of joins is equal to the number of absolute paths minus 1. In addition, a cartesian product can be regarded as a join without any attributes. Since each of the variables in the for loop is either binded to a ndoe in the xpath or a node in a relative path leading by other variable, if we consider the binding as an edge between two variables, then it's clear that for each absolute path there's a variable tree where the children of a node are binded through `Var Seq Path` pattern to the parent and the root of the variable tree is the variable directly binded to the Xpath. Also in the `where` clause, each of the condition can be thought as a different kind of edge between two nodes, either variable node or constant node. In that sense, any two connected components in this graph will be considered as a cartesian product and in any connected components, any two trees that are connected can be thought as a join on those condition edge. So we write a new visitor class to detect whether there's a join in the query. If there's a join, then we rewrite the query into join query to start evaluating. Otherwise, we stick with the original query. First of all, we define our tree structure called Navigation Tree Node:
-```
-NavNode{
-   NavNode root;
-   String name;
-   HashMap<key, NavNode> children;
-   int type;
-   List<NavNode> equality;
-}
-```
-where the key of HashMap is the name of the variables binded to this variable and `equality` stores the conditions where the variable node is on left hand side.
+To detect a join operation from FWR clause, we implement a different parse tree visitor to detect a join operation and rewrite the original query.
+We start with the for clause by creating a new structure called Navigation Tree Node(NavNode) to store a variable, its child variables and all the conditions associated with this variable. In such way, the variable binded to a xpath will be the root of a navigation tree. After iterating all the variable bindings in a for clause, we will create several (or just one) navigation trees. If there's only one navigation tree, then there's no join and the visitor will just return `null`. For each navigation tree, we want to rewrite it into a for loop that returns a tuple containing all the variables.
+Then it comes to the where clause. The visitor mainly follows the five steps when visiting the where clause:
+1. Loop through all the conditions. If one side of the equality is a constant string, this equality should happen inside the for loop. We store this equality inside the navigation tree node. If both sides are variables, we will check whether their roots are the same. If roots are the same, then it's a self-join which won't be implemented in this milestone so we will just store this equality inside the navigation tree as a filter. Otherwise, it's a join equality and we will stores these two attributes into a list.
+2. Rewrite the navigation tree into a FWR clause which returns a tuple containing all the variables node in the tree.
+3. For each join equality, we retrieve the roots of both variables in the navigation tree. In this way, for each pair of root, we will obtain a list of attributes to join on.
+4. We regard each navigation tree as a connected component. Now we apply the union-find algorithm with respect to the pair of roots we obtained above to join the connected components by putting the XQueries of both into one join clause.
+5. We also need to handle the cartesian product case. A cartesian product occurs when there's still more than 1 connected components in the graph. Then we join these connected components one by one by producing a join clause with empty attribute list.
 
-The algorithm rewriting the query is as the following:
-1. Parse the original query
-2. For each variable binding in the for loop, if it's binded directly to a Xpath, we create a navigation node of it and store it into a HashMap where the key is the name of the variable and the value is an integer representing the id of the connected component it is in.
+Using this algorithm, we are able to handle multiple joins.
+Finally when the visitor visits the return clause, it replace each of the variables with certain pattern, for example`$a`, with `$tuple/a/*`. 
