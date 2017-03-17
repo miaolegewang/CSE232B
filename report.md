@@ -11,13 +11,15 @@ Since each attributes are actually the text nodes which are the leaves of the XM
 
 #### 2. Join detection
 To detect a join operation from FWR clause, we implement a different parse tree visitor to detect a join operation and rewrite the original query.
-We start with the for clause by creating a new structure called Navigation Tree Node(NavNode) to store a variable, its child variables and all the conditions associated with this variable. In such way, the variable binded to a xpath will be the root of a navigation tree. After iterating all the variable bindings in a for clause, we will create several (or just one) navigation trees. If there's only one navigation tree, then there's no join and the visitor will just return `null`. For each navigation tree, we want to rewrite it into a for loop that returns a tuple containing all the variables.
-Then it comes to the where clause. The visitor mainly follows the five steps when visiting the where clause:
-1. Loop through all the conditions. If one side of the equality is a constant string, this equality should happen inside the for loop. We store this equality inside the navigation tree node. If both sides are variables, we will check whether their roots are the same. If roots are the same, then it's a self-join which won't be implemented in this milestone so we will just store this equality inside the navigation tree as a filter. Otherwise, it's a join equality and we will stores these two attributes into a list.
-2. Rewrite the navigation tree into a FWR clause which returns a tuple containing all the variables node in the tree.
-3. For each join equality, we retrieve the roots of both variables in the navigation tree. In this way, for each pair of root, we will obtain a list of attributes to join on.
-4. We regard each navigation tree as a connected component. Now we apply the union-find algorithm with respect to the pair of roots we obtained above to join the connected components by putting the XQueries of both into one join clause.
-5. We also need to handle the cartesian product case. A cartesian product occurs when there's still more than 1 connected components in the graph. Then we join these connected components one by one by producing a join clause with empty attribute list.
+We start with the for clause by creating a new structure called Navigation Tree Node(NavNode) to store a variable, its child variables and all the conditions associated with this variable. In such way, the variable binded to an xpath will be the root of a navigation tree. After iterating all the variable bindings in a for clause, we will create several (or just one) navigation trees. If there's only one navigation tree, then there's no join and the visitor will just return `null`. For each navigation tree, we want to rewrite it into a for loop that returns a tuple containing all the variables.
 
-Using this algorithm, we are able to handle multiple joins.
-Finally when the visitor visits the return clause, it replace each of the variables with certain pattern, for example`$a`, with `$tuple/a/*`. 
+Then it comes to the where clause. It will loop through all the conditions. If one side of the equality is a constant string, this equality should happen inside the for loop. We store this equality inside the navigation tree node. If both sides are variables, we will check whether their roots are the same. If roots are the same, then it's a self-join which won't be implemented in this milestone so we will just store this equality inside the navigation tree as a filter. Otherwise, it's a join equality and we will stores these two attributes into a list.
+
+
+Finally when the visitor visits the return clause. The visitor mainly follows the five steps when visiting the return clause:
+
+1. Rewrite the navigation tree into a FWR clause which returns a tuple containing all the variables node in the tree.
+2. For each join equality, we retrieve the roots of both variables in the navigation tree. In this way, for each pair of root, we will obtain a list of attributes to join on.
+3. We regard each navigation tree as a connected component. Now we apply the union-find algorithm with respect to the pair of roots we obtained above to join the connected components by putting the XQueries of both into one join clause.
+4. We also need to handle the cartesian product case. A cartesian product occurs when there's still more than 1 connected components in the graph. Then we join these connected components one by one by producing a join clause with empty attribute list. Using this algorithm, we are able to handle multiple joins.
+5. For the return clause, it replace each of the variables with certain pattern, for example`$a`, with `$tuple/a/*`.
