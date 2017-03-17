@@ -14,6 +14,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import ucsd.xpath.navigation.NavNode;
 
 public class RewriteVisitor extends XQueryBaseVisitor<String>{
+	private HashMap<String, HashSet<Pair>> joinMap = new HashMap<>();		// To avoid duplicate join conditions
 	private HashMap<String, NavNode> root;
 	private String tupleName = "taylorSwift";
 	private HashMap<String, Pair> joinConditions;
@@ -117,12 +118,12 @@ public class RewriteVisitor extends XQueryBaseVisitor<String>{
 	 */
 	@Override public String visitFlwr(@NotNull XQueryParser.FlwrContext ctx) {
 		fromReturnClause = false;
-		if(ctx.whereClause() == null || ctx.letClause() != null)
-			return null;
 		visit(ctx.forClause());
-		String forClause = visit(ctx.whereClause());
-		String returnClause = visit(ctx.returnClause());
-		return forClause + "\n" + returnClause;
+		if(rootNodes.size() == 1)
+			return null;
+		if(ctx.whereClause() != null)
+			visit(ctx.whereClause());
+		return visit(ctx.returnClause());
 	}
 	
 	/**
@@ -221,8 +222,7 @@ public class RewriteVisitor extends XQueryBaseVisitor<String>{
 	 */
 	@Override public String visitWhereClause(@NotNull XQueryParser.WhereClauseContext ctx) {
 		visit(ctx.cond());
-		String fc = "for ";
-		HashMap<String, HashSet<Pair>> joinMap = new HashMap<>();		// To avoid duplicate join conditions
+		
 		HashMap<String, Pair> tmpJoinConditions = new HashMap<>(joinConditions);
 		for(String pStr : tmpJoinConditions.keySet()){
 			Pair p = tmpJoinConditions.get(pStr);
@@ -238,50 +238,7 @@ public class RewriteVisitor extends XQueryBaseVisitor<String>{
 			}
 		}
 		
-		// Produce For clause for every root node
-		HashMap<Integer, String> joinStatement = new HashMap<>();
-		for(String rootNode : rootNodes.keySet()){
-			joinStatement.put(rootNodes.get(rootNode), "(" + printForLoop(root.get(rootNode)) + ")");
-		}
-		
-		// Produce join statement
-		for(String rStr: joinMap.keySet()){
-			Pair r = joinConditions.get(rStr);
-			String firstForClause = joinStatement.get(rootNodes.get(r.first));
-			String secondForClause = joinStatement.get(rootNodes.get(r.second));
-			List<String> firstAttrs = new ArrayList<>(), secondAttrs = new ArrayList<>();
-			for(Pair attr : joinMap.get(rStr)){
-				if(root.get(attr.first).root().name().equals(r.first)){
-					firstAttrs.add(attr.first.substring(1));
-					secondAttrs.add(attr.second.substring(1));
-				} else {
-					firstAttrs.add(attr.second.substring(1));
-					secondAttrs.add(attr.first.substring(1));
-				}
-			}
-			String joinClause = "join(\n " + firstForClause + ",\n " + secondForClause + ",\n ["
-							  + joinList(firstAttrs, ",") + "], [" + joinList(secondAttrs, ",") + "])\n";
-			joinStatement.remove(rootNodes.get(r.first));
-			joinStatement.remove(rootNodes.get(r.second));
-			int idx = Math.min(rootNodes.get(r.first), rootNodes.get(r.second));
-			System.out.println(joinClause);
-			joinStatement.put(idx, joinClause);
-			rootNodes.put(r.first, idx);
-			rootNodes.put(r.second, idx);
-		}
-		
-		// Handling Cartesian product
-		Stack<String> joinStatementList = new Stack<>();
-		for(String query : joinStatement.values()){
-			joinStatementList.push(query);
-		}
-		while(joinStatementList.size() > 1){
-			String first = joinStatementList.pop(),
-				   second = joinStatementList.pop();
-			joinStatementList.push("join(" + first + ", " + second +  "[], [])");
-		}
-		fc += "$" + tupleName + " in " + joinStatementList.peek() + "\n";
-		return fc;
+		return "";
 	}
 	
 	/**
@@ -335,10 +292,53 @@ public class RewriteVisitor extends XQueryBaseVisitor<String>{
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public String visitReturnClause(@NotNull XQueryParser.ReturnClauseContext ctx) {
+		// Produce For clause for every root node
+		HashMap<Integer, String> joinStatement = new HashMap<>();
+		for(String rootNode : rootNodes.keySet()){
+			joinStatement.put(rootNodes.get(rootNode), "(" + printForLoop(root.get(rootNode)) + ")");
+		}
+				
+		// Produce join statement
+		for(String rStr: joinMap.keySet()){
+			Pair r = joinConditions.get(rStr);
+			String firstForClause = joinStatement.get(rootNodes.get(r.first));
+			String secondForClause = joinStatement.get(rootNodes.get(r.second));
+			List<String> firstAttrs = new ArrayList<>(), secondAttrs = new ArrayList<>();
+			for(Pair attr : joinMap.get(rStr)){
+				if(root.get(attr.first).root().name().equals(r.first)){
+					firstAttrs.add(attr.first.substring(1));
+					secondAttrs.add(attr.second.substring(1));
+				} else {
+					firstAttrs.add(attr.second.substring(1));
+					secondAttrs.add(attr.first.substring(1));
+				}
+			}
+			String joinClause = "join(\n " + firstForClause + ",\n " + secondForClause + ",\n ["
+									  + joinList(firstAttrs, ",") + "], [" + joinList(secondAttrs, ",") + "])\n";
+			joinStatement.remove(rootNodes.get(r.first));
+			joinStatement.remove(rootNodes.get(r.second));
+			int idx = Math.min(rootNodes.get(r.first), rootNodes.get(r.second));
+			System.out.println(joinClause);
+			joinStatement.put(idx, joinClause);
+			rootNodes.put(r.first, idx);
+			rootNodes.put(r.second, idx);
+		}
+				
+		// Handling Cartesian product
+		Stack<String> joinStatementList = new Stack<>();
+		for(String query : joinStatement.values()){
+			joinStatementList.push(query);
+		}
+		while(joinStatementList.size() > 1){
+			String first = joinStatementList.pop(),
+				  second = joinStatementList.pop();
+			joinStatementList.push("join(" + first + ", " + second +  ", [], [])");
+		}
+		String fc = "for $" + tupleName + " in " + joinStatementList.peek() + "\n";
 		fromReturnClause = true;
-		String tmp = "return " + visit(ctx.query());
+		fc += "return " + visit(ctx.query());
 		fromReturnClause = false;
-		return tmp;
+		return fc;
 	}
 	
 	
